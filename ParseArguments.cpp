@@ -38,8 +38,6 @@ void ParseArguments::checkArguments(int argc, char** argv){
             checkArgumentValue(argc,i);
             urlGiven = true;
             url = argv[i];
-            //todo нжно убрать кавычки или добавить класс на парс url
-            checkUrl(); //todo ???
         }
 
     }
@@ -60,18 +58,60 @@ void ParseArguments::checkArgumentValue(int argc, int number) {
     }
 }
 
-void ParseArguments::checkUrl() {
+//void ParseArguments::checkUrl() {
+//
+//    UrlParser urlParser;
+//    urlParser.parse(url);
+//}
 
-    UrlParser urlParser;
-    urlParser.checkUrl(url);
-//    std::cout << url << std::endl;
-//    if(std::regex_match(url, std::regex(regexUrl))){
-//        std::cout << "OK" << std::endl;
-//    }
+/// ______
+
+bool ParseArguments::getTimeChangeGiven() const {
+    return timeChangeGiven;
+}
+
+bool ParseArguments::getNameAuthorGiven() const {
+    return nameAuthorGiven;
+}
+
+bool ParseArguments::getAssociatedUrlGiven() const {
+    return associatedUrlGiven;
+}
+
+bool ParseArguments::getFeedFileGiven() const {
+    return feedFileGiven;
+}
+
+bool ParseArguments::getUrlGiven() const {
+    return urlGiven;
+}
+
+bool ParseArguments::getCertificateFileGiven() const {
+    return certificateFileGiven;
+}
+
+bool ParseArguments::getCertificateDirectoryGiven() const {
+    return certificateDirectoryGiven;
+}
+
+std::string ParseArguments::getUrl() const {
+    return url;
+}
+
+std::string ParseArguments::getFeedFilePath() const {
+    return feedFilePath;
+}
+
+std::string ParseArguments::getCertificateFilePath() const {
+    return certificateFilePath;
+}
+
+std::string ParseArguments::getCertificateDirectoryPath() const {
+    return certificateDirectoryPath;
 }
 
 
-// (http|https)://[a-zA-Z\.0-9-]+(:[0-9]+.+|[^:]+)
-//^(http|https)://[a-zA-Z\.0-9-]+(:[0-9]+.+|[^:]+)$
+
+
 
 //todo add check repeat given arguments

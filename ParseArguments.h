@@ -11,7 +11,6 @@ class ParseArguments {
 private:
 
     std::string url{0};
-    u_int16_t port; // specify by protocol value ???
     std::string feedFilePath{0};
     std::string certificateFilePath{0};
     std::string certificateDirectoryPath{0};
@@ -22,7 +21,6 @@ private:
     // bool variables to indicate whether an argument is given
     bool feedFileGiven = false;
     bool urlGiven = false;
-    bool portGiven = false;
     bool certificateFileGiven = false;
     bool certificateDirectoryGiven = false;
 
@@ -39,11 +37,22 @@ private:
 
 public:
     void checkArguments(int argc, char** argv);
+    bool getTimeChangeGiven() const;
+    bool getNameAuthorGiven() const;
+    bool getAssociatedUrlGiven() const;
+    bool getFeedFileGiven() const;
+    bool getUrlGiven() const;
+    bool getCertificateFileGiven() const;
+    bool getCertificateDirectoryGiven() const;
+    std::string getUrl() const;
+    std::string getFeedFilePath() const;
+    std::string getCertificateFilePath() const;
+    std::string getCertificateDirectoryPath() const;
+
 
 private:
     std::string searchArgument(char* arg);
     void checkArgumentValue(int argc, int number);
-    void checkUrl();
 
 };
 
