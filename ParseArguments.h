@@ -2,6 +2,7 @@
 #ifndef ISA_PARSEARGUMENTS_H
 #define ISA_PARSEARGUMENTS_H
 #include "Error.h"
+#include "UrlParser.h"
 //using namespace std;
 
 
@@ -32,6 +33,8 @@ private:
     const std::string TIME_CHANGE = "T";
     const std::string NAME_AUTHOR = "a";
     const std::string ASSOCIATED_URL = "u";
+
+    const std::string regexUrl = "^(http|https)://[a-zA-Z\\.0-9-]+(:[0-9]+.+|[^:]+)$";
 
 
 public:

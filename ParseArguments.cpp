@@ -34,9 +34,12 @@ void ParseArguments::checkArguments(int argc, char** argv){
             if(feedFileGiven){
                 Error::errorPrint(Error::ERROR_URL_OR_FEED_FILE);
             }
+
             checkArgumentValue(argc,i);
             urlGiven = true;
-            url = argv[++i];
+            url = argv[i];
+            //todo нжно убрать кавычки или добавить класс на парс url
+            checkUrl(); //todo ???
         }
 
     }
@@ -59,7 +62,16 @@ void ParseArguments::checkArgumentValue(int argc, int number) {
 
 void ParseArguments::checkUrl() {
 
+    UrlParser urlParser;
+    urlParser.checkUrl(url);
+//    std::cout << url << std::endl;
+//    if(std::regex_match(url, std::regex(regexUrl))){
+//        std::cout << "OK" << std::endl;
+//    }
 }
 
 
 // (http|https)://[a-zA-Z\.0-9-]+(:[0-9]+.+|[^:]+)
+//^(http|https)://[a-zA-Z\.0-9-]+(:[0-9]+.+|[^:]+)$
+
+//todo add check repeat given arguments
