@@ -10,12 +10,17 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 using namespace std;
-#include "ParseArguments.h"
+
+#include "FeedReader.h"
 
 int main(int argc, char** argv) {
 
-    ParseArguments parseArguments = ParseArguments();
-    parseArguments.checkArguments(argc,argv);
+    FeedReader feedReader;
+    feedReader.read(argc,argv);
+
+//    ParseArguments parseArguments = ParseArguments();
+//    parseArguments.checkArguments(argc,argv);
+
 //    std::cout << "Hello World";
 
 
