@@ -8,38 +8,49 @@
 class UrlParser {
 
 private:
+
+    const u_int8_t schemeNumber = 1;
+    const u_int8_t domainNameNumber = 2;
+    const u_int8_t portNumber = 3;
+    const u_int8_t patchNumber = 4;
+    const u_int8_t parametersNumber = 5;
+    const u_int8_t fragmentNumber = 6;
+
     const std::string HTTP = "http";
     const std::string HTTPS = "https";
-    const std::string regexUrl =  "^(http|https)://[a-zA-Z\\.0-9-]+(:[0-9]+.+|[^:]+)$";
+    const std::string regexUrl =  "^(http|https)://([a-zA-Z\\.0-9-]+)(:[0-9]+)?(/[^:?#]*)?(\\?[^:#]+)?(#.+)?$";
+//    const std::string regexUrl =  "^(http|https)://[a-zA-Z\\.0-9-]+(:[0-9]+.+|[^:]+)$";
 
     int port = 0;
     bool httpScheme = false;
     bool httpsScheme = false;
-    std::string stringPort{0};
-    std::string url{0};
+    std::string *stringPort = nullptr;
+    std::string *domainName = nullptr;
+    std::string *path = nullptr;
+    std::string *parameters = nullptr;
+    std::string *fragment = nullptr;
+
     std::string urlString{0};
-    std::string domainName{0};
-    std::string path{0};
-    std::string parameters{0};
 
-    bool parseScheme(u_int16_t& schemeLen);
-    void parseDomainName();
+    void parseScheme(const std::string& scheme);
     void parsePort();
-    void parsePath(u_int16_t schemeLen);
-    void parseParameters(u_int16_t schemeLen);
     bool checkUrl(const std::string& urlString);
-    bool regexUrlCheck();
-
 
 public:
     void parse(const std::string& urlArgument);
     int getPort() const;
+    std::string* getStringPort() const;
     bool getHttpScheme() const;
     bool getHttpsScheme() const;
-    std::string getDomainName() const;
-    std::string getPath() const;
-    std::string getParameters() const;
+    std::string* getDomainName() const;
+    std::string* getPath() const;
+    std::string* getParameters() const;
+    std::string* getFragment() const;
+
+    ~UrlParser();
 };
 
 
 #endif //ISA_URLPARSER_H
+
+//^(http|https)://([a-zA-Z\.0-9-]+)(:[0-9]+)?(/[^:?#]*)?(\?[^:#]+)?(#.+)?$

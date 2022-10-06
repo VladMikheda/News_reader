@@ -2,20 +2,47 @@
 #include "UrlParser.h"
 
 
-void UrlParser::parse(const std::string& urlArgument) {
+UrlParser::~UrlParser(){
+    delete stringPort;
+    delete domainName;
+    delete path;
+    delete parameters;
+    delete fragment;
+}
 
-    u_int16_t schemeLen = 0;
+void UrlParser::parse(const std::string& urlArgument) {
 
     if(!checkUrl(urlArgument)){
         //todo error
         std::cout << "ERROR not correct url" << std::endl;
     }
 
-    parseScheme(schemeLen);
-    parseDomainName();
+    std::smatch allParts;
+    if(!std::regex_match(urlString, allParts, std::regex(regexUrl))){
+        std::cout << "ERROR" << std::endl;
+    }
+
+    parseScheme(allParts[schemeNumber].str());
+
+    domainName = new std::string(allParts[domainNameNumber].str());
+
+    if(!allParts[portNumber].str().empty()){
+        stringPort = new std::string (allParts[portNumber].str().substr(1));
+    }
+
     parsePort();
-    parsePath(schemeLen);
-    parseParameters(schemeLen);
+
+    if(!allParts[patchNumber].str().empty()){
+        path = new std::string (allParts[patchNumber].str());
+    }
+
+    if(!allParts[parametersNumber].str().empty()){
+        parameters = new std::string (allParts[parametersNumber].str());
+    }
+
+    if(!allParts[fragmentNumber].str().empty()){
+        fragment = new std::string (allParts[fragmentNumber].str());
+    }
 
 }
 
@@ -29,60 +56,25 @@ bool UrlParser::checkUrl(const std::string& urlArgument) {
         return false;
     }
 
-    if(!regexUrlCheck()){
-        //todo error
-        std::cout << "ERROR" << std::endl;
-        return false;
-    }
-
     return true;
 }
 
-bool UrlParser::regexUrlCheck(){
-    //if url is not correct return false
-    if(!std::regex_match(urlString, std::regex(regexUrl))){
-        return false;
-    }
-    return true;
-}
 
-bool UrlParser::parseScheme(u_int16_t& schemeLen) {
-    const std::string endSymbolsScheme = "://";
-    u_int64_t endPositionScheme = urlString.find(endSymbolsScheme);
-    std::string scheme = urlString.substr(0,endPositionScheme);
-
+void UrlParser::parseScheme(const std::string& scheme) {
     if(scheme == HTTP){
         httpScheme = true;
-        schemeLen = HTTP.length() + endSymbolsScheme.length();
     }else if(scheme == HTTPS){
         httpsScheme = true;
-        schemeLen = HTTPS.length() + endSymbolsScheme.length();
-    }else{
-        return false;
     }
-    return true;
+
 //    std::cout << scheme << std::endl;
-}
-void UrlParser::parseDomainName() {
-    const std::string endSymbolsScheme = "://";
-    u_int64_t firstPosDomainName = urlString.find(endSymbolsScheme) + endSymbolsScheme.length();
-    u_int64_t endPosDomainName = urlString.find('/',firstPosDomainName);
-    if(endPosDomainName == std::string::npos){
-        endPosDomainName = urlString.length() - 1;
-    }
-    u_int64_t lenDomainName = endPosDomainName - firstPosDomainName;
-    domainName = urlString.substr(firstPosDomainName,lenDomainName);
-    std::cout << domainName << std::endl;
 }
 
 void UrlParser::parsePort() {
 
-    size_t firstPosPort = domainName.find(':');
-    if(firstPosPort != std::string::npos){
-        u_int64_t lenPort = domainName.length() - (firstPosPort + 1);
-        stringPort = domainName.substr((firstPosPort + 1),lenPort);
+    if(stringPort){
         try{
-            port = stoi(stringPort, nullptr,10);
+            port = stoi(*stringPort, nullptr,10);
         }catch(std::exception const& e){
             //todo error
             std::cout << "ERROR port is not correct" << std::endl;
@@ -92,13 +84,13 @@ void UrlParser::parsePort() {
             //todo error
             std::cout << "ERROR port is not correct" << std::endl;
         }
-
-//        std::cout << port;
     }else{
         if(httpScheme){
             port = 80;
+            stringPort = new std::string("80");
         }else if(httpsScheme){
             port = 443;
+            stringPort = new std::string("443");
         }else{
             //todo error
             std::cout << "ERROR port is not exist";
@@ -107,46 +99,23 @@ void UrlParser::parsePort() {
 
 }
 
-void UrlParser::parsePath(u_int16_t schemeLen) {
-    size_t firstPosPath = urlString.find('/', schemeLen);
-    if(firstPosPath != std::string::npos){
-        size_t endPosPath = urlString.find('?', schemeLen);
-        u_int64_t lenPatch = urlString.length() - (firstPosPath + 1);
-        if(endPosPath != std::string::npos){
-            lenPatch =  endPosPath - (firstPosPath + 1);
-        }
-
-        path = urlString.substr(firstPosPath + 1,lenPatch);
-
-    }else{
-        //todo просто его нету
-    }
-//    std::cout << path;
-}
-
-void UrlParser::parseParameters(u_int16_t schemeLen) {
-    size_t firstPosParameters = urlString.find('?', schemeLen);
-    if(firstPosParameters == std::string::npos){
-        return;
-    }
-    u_int64_t lenParameters = urlString.length() - (firstPosParameters + 1);
-    parameters = urlString.substr(firstPosParameters + 1, lenParameters);
-//    std::cout << parameters;
-}
-
 int UrlParser::getPort() const {
     return port;
 }
 
-std::string UrlParser::getDomainName() const{
+std::string* UrlParser::getStringPort() const {
+    return stringPort;
+}
+
+std::string* UrlParser::getDomainName() const{
     return domainName;
 }
 
-std::string UrlParser::getPath() const{
+std::string* UrlParser::getPath() const{
     return path;
 }
 
-std::string UrlParser::getParameters() const {
+std::string* UrlParser::getParameters() const {
     return parameters;
 }
 
@@ -157,4 +126,9 @@ bool UrlParser::getHttpScheme() const {
 bool UrlParser::getHttpsScheme() const{
     return httpsScheme;
 }
+
+std::string *UrlParser::getFragment() const {
+    return fragment;
+}
+
 
