@@ -1,6 +1,15 @@
 #include "ParseArguments.h"
 
+ParseArguments::~ParseArguments(){
+    delete url;
+    delete feedFilePath;
+    delete certificateFilePath;
+    delete certificateDirectoryPath;
+}
+
+
 void ParseArguments::checkArguments(int argc, char** argv){
+
 
     for (int i = 1; i < argc; i++){
         //parse argument to string
@@ -8,21 +17,14 @@ void ParseArguments::checkArguments(int argc, char** argv){
 
         if(argument == CERTIFICATE_FILE){
             checkArgumentValue(argc, i);
-            certificateFileGiven = true;
-            certificateFilePath = argv[++i]; // path entry for the certificate
+            certificateFilePath = new std::string(argv[++i]); // path entry for the certificate
             //todo path check
-
         }else if(argument == CERTIFICATE_DIRECTORY){
             checkArgumentValue(argc, i);
-            certificateDirectoryGiven = true;
-            certificateDirectoryPath = argv[++i];
+            certificateDirectoryPath = new std::string(argv[++i]);
         }else if(argument == FEED_FILE){
-            if(urlGiven){
-                Error::errorPrint(Error::ERROR_URL_OR_FEED_FILE);
-            }
             checkArgumentValue(argc,i);
-            feedFileGiven = true;
-            feedFilePath = argv[++i];
+            feedFilePath = new std::string(argv[++i]);
         }else if(argument == TIME_CHANGE){
             timeChangeGiven = true;
         }else if(argument == NAME_AUTHOR){
@@ -31,20 +33,16 @@ void ParseArguments::checkArguments(int argc, char** argv){
             associatedUrlGiven = true;
         }
         else{
-            if(feedFileGiven){
-                Error::errorPrint(Error::ERROR_URL_OR_FEED_FILE);
-            }
-
             checkArgumentValue(argc,i);
-            urlGiven = true;
-            url = argv[i];
+            url = new std::string(argv[i]);
         }
 
     }
 
-    if(!urlGiven && !feedFileGiven){
+    if((!url && !feedFilePath) || (url && feedFilePath)){
         Error::errorPrint(Error::ERROR_URL_OR_FEED_FILE);
     }
+
 
 }
 
@@ -58,14 +56,6 @@ void ParseArguments::checkArgumentValue(int argc, int number) {
     }
 }
 
-//void ParseArguments::checkUrl() {
-//
-//    UrlParser urlParser;
-//    urlParser.parse(url);
-//}
-
-/// ______
-
 bool ParseArguments::getTimeChangeGiven() const {
     return timeChangeGiven;
 }
@@ -78,35 +68,19 @@ bool ParseArguments::getAssociatedUrlGiven() const {
     return associatedUrlGiven;
 }
 
-bool ParseArguments::getFeedFileGiven() const {
-    return feedFileGiven;
-}
-
-bool ParseArguments::getUrlGiven() const {
-    return urlGiven;
-}
-
-bool ParseArguments::getCertificateFileGiven() const {
-    return certificateFileGiven;
-}
-
-bool ParseArguments::getCertificateDirectoryGiven() const {
-    return certificateDirectoryGiven;
-}
-
-std::string ParseArguments::getUrl() const {
+std::string* ParseArguments::getUrl() const {
     return url;
 }
 
-std::string ParseArguments::getFeedFilePath() const {
+std::string* ParseArguments::getFeedFilePath() const {
     return feedFilePath;
 }
 
-std::string ParseArguments::getCertificateFilePath() const {
+std::string* ParseArguments::getCertificateFilePath() const {
     return certificateFilePath;
 }
 
-std::string ParseArguments::getCertificateDirectoryPath() const {
+std::string* ParseArguments::getCertificateDirectoryPath() const {
     return certificateDirectoryPath;
 }
 
