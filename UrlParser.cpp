@@ -53,6 +53,7 @@ bool UrlParser::checkUrl(const std::string& urlArgument) {
         urlString = urlArgument.substr(1,lastCharUrlString - 1);
 //        std::cout << urlString <<  std::endl;
     }else{
+        urlString = urlArgument.substr();
         return false;
     }
 
