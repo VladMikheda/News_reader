@@ -13,9 +13,16 @@ public:
         ERROR_ARGUMENT_NOT_EXIST =  100,
         ERROR_ARGUMENT_NOT_VALUE = 101,
         ERROR_URL_OR_FEED_FILE = 102,
+
+        ERROR_FAIL_DEFAULT_CERTIFICATE = 110,
+        ERROR_FAIL_CERTIFICATE_FILE = 111,
+        ERROR_FAIL_CERTIFICATE_DIR = 112,
+        ERROR_FAIL_OPEN_SECURE_CONNECT = 113,
+        ERROR_FAIL_OPEN_CONNECT = 114,
+        ERROR_FAIL_CREATE_BIO = 115,
     };
 
-    static void errorPrint(int errorNumber);
+    static void errorPrint(int errorNumber,  bool ex = true);
 
 };
 
