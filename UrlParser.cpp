@@ -12,13 +12,9 @@ UrlParser::~UrlParser(){
 
 void UrlParser::parse(const std::string& urlArgument) {
 
-    if(!checkUrl(urlArgument)){
-        //todo error
-        std::cout << "ERROR not correct url" << std::endl;
-    }
 
     std::smatch allParts;
-    if(!std::regex_match(urlString, allParts, std::regex(regexUrl))){
+    if(!std::regex_match(urlArgument, allParts, std::regex(regexUrl))){
         std::cout << "ERROR" << std::endl;
     }
 
@@ -45,21 +41,6 @@ void UrlParser::parse(const std::string& urlArgument) {
     }
 
 }
-
-bool UrlParser::checkUrl(const std::string& urlArgument) {
-
-    const u_int64_t lastCharUrlString = urlArgument.length() - 1;
-    if(urlArgument.c_str()[0] == '\'' && urlArgument.c_str()[lastCharUrlString] == '\''){
-        urlString = urlArgument.substr(1,lastCharUrlString - 1);
-//        std::cout << urlString <<  std::endl;
-    }else{
-        urlString = urlArgument.substr();
-        return false;
-    }
-
-    return true;
-}
-
 
 void UrlParser::parseScheme(const std::string& scheme) {
     if(scheme == HTTP){

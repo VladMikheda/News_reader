@@ -23,22 +23,24 @@ int main(int argc, char** argv) {
 
 
 //    //initialization
+//    SSL_library_init();
 //    SSL_load_error_strings();
 //    ERR_load_BIO_strings();
 //    OpenSSL_add_all_algorithms();
 //
 //    // new socket
-//    BIO* bio;
+//    BIO* bio = nullptr;
 //
 //    // initialization ssl connect
-//    SSL_CTX  *ctx = SSL_CTX_new(SSLv23_client_method());
-//    SSL  *ssl;
+//    SSL_CTX  *ctx = nullptr;
+//    ctx = SSL_CTX_new(SSLv23_client_method());
+//    SSL  *ssl = nullptr;
 //
 //
 //    //add SSL certificate  // + file // + path
 //    SSL_CTX_set_default_verify_paths(ctx);
 //
-//    //sll setting bio
+//    //sll setting
 //    bio = BIO_new_ssl_connect(ctx);
 //    BIO_get_ssl(bio, &ssl);
 //    SSL_set_mode(ssl, SSL_MODE_AUTO_RETRY);
