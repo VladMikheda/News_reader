@@ -6,7 +6,7 @@
 # include  "openssl/err.h"
 #include <string>
 #include "Error.h"
-
+#define BUFFER_SIZE 1024
 
 
 
@@ -19,13 +19,13 @@ public:
     bool addSslCertificate(const std::string& certificatePath);
     bool addSslCertificateDir(const std::string& certificateDirPath);
 
-    void settingBio();
+    bool settingBio();
     bool unsecureConnect(const std::string& url);
-    bool sslConnect(const std::string& url);
+    void sslConnect(const std::string& url);
     bool isCertificateValid();
-    void sendRequest(const std::string& request);
-    int readResponse(char* buf, int bufSize);
-
+    bool sendRequest(const std::string& request);
+    bool readResponse(std::string &response);
+    bool checkConnect();
     void closeConnect();
 
 
