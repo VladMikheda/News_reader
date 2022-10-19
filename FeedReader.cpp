@@ -1,6 +1,7 @@
 #include "FeedReader.h"
 
-
+#include <libxml2/libxml/parser.h>
+#include <libxml2/libxml/tree.h>
 
 void FeedReader::read(int argc, char **argv) {
 
@@ -18,54 +19,74 @@ void FeedReader::read(int argc, char **argv) {
     Connect connect;
     connect.initialization();
     for(const std::string& urlString : urlList){
+        //url string parse -> domain, port...
         urlParser.parse(urlString);
 
+        //concatenate domain name and port to get connection address
         generateDomainNamePort(*urlParser.getDomainName(),*urlParser.getStringPort());
         generateRequest(urlParser);
 
-        connect.initializationSslConnect();
-
 
         if(urlParser.getHttpsScheme()){
+            //initialize structure to hold the sll information
+            connect.initializationSslConnect();
 
             if(!getCertificate(parseArguments,connect)){
                 connect.closeConnect();
                 continue;
             }
 
-            connect.settingBio();
-
-            if(!connect.isCertificateValid()){
-                std::cout << "ERROR" << std::endl;
+            if(!connect.settingBio()){
+                //todo add error
+                connect.closeConnect();
+                continue;
             }
 
             connect.sslConnect(domainNamePort);
+            if(!connect.checkConnect()){
+                //todo add error
+                connect.closeConnect();
+                continue;
+            }
 
             if(!connect.isCertificateValid()){
-                std::cout << "ERROR" << std::endl;
+                //todo add error
+                connect.closeConnect();
+                continue;
             }
 
-            connect.sendRequest(request);
-        }
-
-        int amountRead = 0;
-        int amount = 0;
-        char buffer[BUFFER_SIZE] = {'\0'};
-        bool first = true;
-
-        while(true){
-            memset(buffer,'\0', BUFFER_SIZE);
-            amountRead = connect.readResponse(buffer,BUFFER_SIZE);
-            std::cout << buffer << std::endl;
-            if(!first){
-                amount += amountRead;
+        }else if(urlParser.getHttpScheme()){
+            if(!connect.unsecureConnect(domainNamePort)){
+                //todo add error
+                connect.closeConnect();
+                continue;
             }
-            first = false;
-            if(amountRead == 0){
-                std::cout << amount << std::endl;
-                break;
+            if(!connect.checkConnect()){
+                //todo add error
+                connect.closeConnect();
+                continue;
             }
         }
+
+
+        if(!connect.sendRequest(request)){
+            //todo add error
+            connect.closeConnect();
+            continue;
+        }
+
+        std::string response{0};
+        if(!connect.readResponse(response)){
+            //todo add error
+            connect.closeConnect();
+            continue;
+        }
+
+        std::cout << response << std::endl;
+
+//        std::cout << request << std::endl;
+
+
     }
 
 }
@@ -87,7 +108,7 @@ void FeedReader::generateRequest(UrlParser &urlParser) {
         fullPath += *urlParser.getFragment();
     }
 
-    request = "GET " + fullPath + " HTTP/1.1\r\n"
+    request = "GET " + fullPath + " HTTP/1.0\r\n"
               + "Host:" + *urlParser.getDomainName() + "\r\n"
               + "Connection:Close"+ "\r\n"
               + "User-Agent:" + userAgent + "\r\n\r\n";

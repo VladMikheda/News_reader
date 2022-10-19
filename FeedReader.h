@@ -7,7 +7,6 @@
 #include <csignal>
 #include "Connect.h"
 
-#define BUFFER_SIZE 1024
 class FeedReader {
 
 public:
