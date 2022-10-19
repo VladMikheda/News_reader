@@ -39,6 +39,18 @@ void Error::errorPrint(int errorNumber, bool ex) {
         case ERROR_FAIL_CREATE_BIO:
             errorMessage = "Problem with creating BIO object";
             break;
+        case ERROR_CERTIFICATE_INVALID:
+            errorMessage = "The certificate being used is invalid";
+            break;
+        case ERROR_SSL_CONNECTION_FAIL:
+            errorMessage = "Connection fail";
+            break;
+        case ERROR_SEND_REQUEST:
+            errorMessage = "Request sending error";
+            break;
+        case ERROR_READ_BIO:
+            errorMessage = "Failed to read response";
+            break;
     }
 
     std::cerr << errorMessage << std::endl;

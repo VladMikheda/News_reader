@@ -20,6 +20,11 @@ public:
         ERROR_FAIL_OPEN_SECURE_CONNECT = 113,
         ERROR_FAIL_OPEN_CONNECT = 114,
         ERROR_FAIL_CREATE_BIO = 115,
+        ERROR_SEND_REQUEST = 116,
+
+        ERROR_CERTIFICATE_INVALID = 120,
+        ERROR_SSL_CONNECTION_FAIL = 121,
+        ERROR_READ_BIO = 122,
     };
 
     static void errorPrint(int errorNumber,  bool ex = true);
