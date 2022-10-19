@@ -1,7 +1,7 @@
 #include "FeedReader.h"
 
-#include <libxml2/libxml/parser.h>
-#include <libxml2/libxml/tree.h>
+//#include <libxml2/libxml/parser.h>
+//#include <libxml2/libxml/tree.h>
 
 void FeedReader::read(int argc, char **argv) {
 
@@ -82,11 +82,32 @@ void FeedReader::read(int argc, char **argv) {
             continue;
         }
 
-        std::cout << response << std::endl;
+//        std::cout << response << std::endl;
 
 //        std::cout << request << std::endl;
 
+        std::string xmlString = response.substr(response.find("\r\n\r\n") + 4);
+//        std::cout << xmlString << std::endl;
+    ///////////
+        XMLParser xmlParser;
+        xmlParser.parse(xmlString);
 
+
+//    xmlDoc *doc = nullptr;
+//    xmlNode *rootElement = nullptr;
+//
+//        doc = xmlParseDoc((xmlChar*)xmlString.c_str());
+//        rootElement = xmlDocGetRootElement(doc);
+//        xmlNode *cur_node = nullptr;
+
+//        std::cout << rootElement->children->next->next->next->children->content << std::endl;
+//        for (cur_node = rootElement->children; cur_node; cur_node = cur_node->next->next){
+//            if(cur_node->name == "title")
+//            std::cout << cur_node->name << std::endl;
+//        }
+
+
+//        std::cout << rootElement->name << std::endl;
     }
 
 }

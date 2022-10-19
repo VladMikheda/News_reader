@@ -2,8 +2,8 @@
 #ifndef ISA_FEEDREADER_H
 #define ISA_FEEDREADER_H
 #include "ParseArguments.h"
+#include "XMLParser.h"
 #include <list>
-#include <cstring>
 #include <csignal>
 #include "Connect.h"
 
