@@ -12,4 +12,4 @@ ISA2022:
 	#g++ $(ALL) -o feedreader -lcrypto -lssl
 	$(CC) $(CFLAGS) $(FILES) -o feedreader $(LIB)
 RUN:
-	./feedreader 'https://what-if.xkcd.com/feed.atom' -u -T
+	./feedreader 'https://en.wikipedia.org/w/api.php?hidebots=1&days=7&limit=50&hidewikidata=1&action=feedrecentchanges&feedformat=atom' -u -T
