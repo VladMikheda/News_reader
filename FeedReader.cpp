@@ -89,25 +89,10 @@ void FeedReader::read(int argc, char **argv) {
         std::string xmlString = response.substr(response.find("\r\n\r\n") + 4);
 //        std::cout << xmlString << std::endl;
     ///////////
-        XMLParser xmlParser;
-        xmlParser.parse(xmlString);
-
-
-//    xmlDoc *doc = nullptr;
-//    xmlNode *rootElement = nullptr;
-//
-//        doc = xmlParseDoc((xmlChar*)xmlString.c_str());
-//        rootElement = xmlDocGetRootElement(doc);
-//        xmlNode *cur_node = nullptr;
-
-//        std::cout << rootElement->children->next->next->next->children->content << std::endl;
-//        for (cur_node = rootElement->children; cur_node; cur_node = cur_node->next->next){
-//            if(cur_node->name == "title")
-//            std::cout << cur_node->name << std::endl;
-//        }
-
-
-//        std::cout << rootElement->name << std::endl;
+        XMLParser xmlParser(parseArguments.isAssociateUrl(), parseArguments.isAuthor(), parseArguments.isTime());
+        if(xmlParser.parse(xmlString)){
+            continue;
+        }
     }
 
 }
