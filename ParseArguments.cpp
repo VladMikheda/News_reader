@@ -10,8 +10,8 @@ ParseArguments::~ParseArguments(){
 
 void ParseArguments::checkArguments(int argc, char** argv){
 
-
     for (int i = 1; i < argc; i++){
+
         //parse argument to string
         std::string argument = searchArgument(argv[i]);
 
@@ -26,14 +26,13 @@ void ParseArguments::checkArguments(int argc, char** argv){
             checkArgumentValue(argc,i);
             feedFilePath = new std::string(argv[++i]);
         }else if(argument == TIME_CHANGE){
-            timeChangeGiven = true;
+            time = true;
         }else if(argument == NAME_AUTHOR){
-            nameAuthorGiven = true;
+            author = true;
         }else if(argument == ASSOCIATED_URL){
-            associatedUrlGiven = true;
+            associateUrl = true;
         }
         else{
-            checkArgumentValue(argc,i);
             url = new std::string(argv[i]);
         }
 
@@ -56,16 +55,16 @@ void ParseArguments::checkArgumentValue(int argc, int number) {
     }
 }
 
-bool ParseArguments::getTimeChangeGiven() const {
-    return timeChangeGiven;
+bool ParseArguments::isTime() const {
+    return time;
 }
 
-bool ParseArguments::getNameAuthorGiven() const {
-    return nameAuthorGiven;
+bool ParseArguments::isAuthor() const {
+    return author;
 }
 
-bool ParseArguments::getAssociatedUrlGiven() const {
-    return associatedUrlGiven;
+bool ParseArguments::isAssociateUrl() const {
+    return associateUrl;
 }
 
 std::string* ParseArguments::getUrl() const {

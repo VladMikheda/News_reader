@@ -22,17 +22,17 @@ private:
     std::string* feedFilePath = nullptr;
     std::string* certificateFilePath = nullptr;
     std::string* certificateDirectoryPath = nullptr;
-    bool timeChangeGiven = false;
-    bool nameAuthorGiven = false;
-    bool associatedUrlGiven = false;
+    bool time = false;
+    bool author = false;
+    bool associateUrl = false;
 
 
 public:
     ~ParseArguments();
     void checkArguments(int argc, char** argv);
-    bool getTimeChangeGiven() const;
-    bool getNameAuthorGiven() const;
-    bool getAssociatedUrlGiven() const;
+    bool isTime() const;
+    bool isAuthor() const;
+    bool isAssociateUrl() const;
     std::string* getUrl() const;
     std::string* getFeedFilePath() const;
     std::string* getCertificateFilePath() const;
