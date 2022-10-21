@@ -6,6 +6,8 @@
 #include <list>
 #include <csignal>
 #include "Connect.h"
+#include <fstream>
+
 
 class FeedReader {
 

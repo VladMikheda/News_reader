@@ -1,10 +1,12 @@
-#include <fstream>
 #include "FeedReader.h"
 
 void FeedReader::read(int argc, char **argv) {
 
-    ParseArguments parseArguments = ParseArguments();
-    parseArguments.checkArguments(argc,argv);
+    ParseArguments parseArguments;
+    if(parseArguments.checkArguments(argc,argv)){
+        parseArguments.~ParseArguments();
+        exit(Error::ERROR_ARGUMENT);
+    }
 
     if(parseArguments.getFeedFilePath()){
         std::ifstream file (*(parseArguments.getFeedFilePath()));
