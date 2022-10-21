@@ -8,7 +8,7 @@ ParseArguments::~ParseArguments(){
 }
 
 
-void ParseArguments::checkArguments(int argc, char** argv){
+bool ParseArguments::checkArguments(int argc, char** argv){
 
     for (int i = 1; i < argc; i++){
 
@@ -16,43 +16,96 @@ void ParseArguments::checkArguments(int argc, char** argv){
         std::string argument = searchArgument(argv[i]);
 
         if(argument == CERTIFICATE_FILE){
-            checkArgumentValue(argc, i);
+
+            if(certificateFilePath){
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
+                return false;
+            }
+
+            if(checkArgumentValue(argc, i)){
+                return false;
+            }
             certificateFilePath = new std::string(argv[++i]); // path entry for the certificate
-            //todo path check
+
         }else if(argument == CERTIFICATE_DIRECTORY){
-            checkArgumentValue(argc, i);
+
+            if(certificateDirectoryPath){
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
+                return false;
+            }
+
+            if(checkArgumentValue(argc, i)){
+                return false;
+            }
             certificateDirectoryPath = new std::string(argv[++i]);
+
         }else if(argument == FEED_FILE){
+
+            if(feedFilePath){
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
+                return false;
+            }
+
             checkArgumentValue(argc,i);
             feedFilePath = new std::string(argv[++i]);
+
         }else if(argument == TIME_CHANGE){
+
+            if(time) {
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
+                return false;
+            }
+
             time = true;
+
         }else if(argument == NAME_AUTHOR){
+
+            if(author) {
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
+                return false;
+            }
+
             author = true;
+
         }else if(argument == ASSOCIATED_URL){
+
+            if(associateUrl) {
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
+                return false;
+            }
+
             associateUrl = true;
-        }
-        else{
+
+        }else{
+
+            if(url) {
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
+                return false;
+            }
+
             url = new std::string(argv[i]);
         }
 
     }
 
     if((!url && !feedFilePath) || (url && feedFilePath)){
-        Error::errorPrint(Error::ERROR_URL_OR_FEED_FILE);
+        Error::errorPrint(Error::ERROR_URL_OR_FEED_FILE, false);
+        return false;
     }
 
-
+    return true;
 }
 
 std::string ParseArguments::searchArgument(char *arg) {
     return (arg[0] == '-') ? std::string {&arg[1]} : std::string(arg);
 }
 
-void ParseArguments::checkArgumentValue(int argc, int number) {
+bool ParseArguments::checkArgumentValue(int argc, int number) {
     if(number + 1 >=  argc){
-        Error::errorPrint(Error::ERROR_ARGUMENT_NOT_VALUE);
+        Error::errorPrint(Error::ERROR_ARGUMENT_NOT_VALUE, false);
+        return false;
     }
+    return true;
 }
 
 bool ParseArguments::isTime() const {
@@ -82,9 +135,3 @@ std::string* ParseArguments::getCertificateFilePath() const {
 std::string* ParseArguments::getCertificateDirectoryPath() const {
     return certificateDirectoryPath;
 }
-
-
-
-
-
-//todo add check repeat given arguments

@@ -26,10 +26,12 @@ private:
     bool author = false;
     bool associateUrl = false;
 
+    std::string searchArgument(char* arg);
+    bool checkArgumentValue(int argc, int number);
+
 
 public:
     ~ParseArguments();
-    void checkArguments(int argc, char** argv);
     bool isTime() const;
     bool isAuthor() const;
     bool isAssociateUrl() const;
@@ -37,12 +39,7 @@ public:
     std::string* getFeedFilePath() const;
     std::string* getCertificateFilePath() const;
     std::string* getCertificateDirectoryPath() const;
-
-
-private:
-    std::string searchArgument(char* arg);
-    void checkArgumentValue(int argc, int number);
-
+    bool checkArguments(int argc, char** argv);
 };
 
 
