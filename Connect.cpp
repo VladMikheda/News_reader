@@ -133,7 +133,9 @@ void Connect::closeConnect() {
     if(bio){
         BIO_free_all(bio);
     }
+    bio = nullptr;
     if(ctx){
         SSL_CTX_free(ctx);
     }
+    ctx = nullptr;
 }
