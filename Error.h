@@ -1,6 +1,3 @@
-//
-// Created by goofy on 03.10.22.
-//
 
 #ifndef ISA_ERROR_H
 #define ISA_ERROR_H
@@ -13,6 +10,8 @@ public:
         ERROR_ARGUMENT_NOT_EXIST =  100,
         ERROR_ARGUMENT_NOT_VALUE = 101,
         ERROR_URL_OR_FEED_FILE = 102,
+        ERROR_ARGUMENT_REPEAT = 103,
+        ERROR_ARGUMENT = 103,
 
         ERROR_FAIL_DEFAULT_CERTIFICATE = 110,
         ERROR_FAIL_CERTIFICATE_FILE = 111,

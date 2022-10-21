@@ -9,7 +9,7 @@
 
 void Error::errorPrint(int errorNumber, bool ex) {
     std::string errorMessage{0};
-    std::cerr << "ERROR: " + std::to_string(errorNumber) << std::endl;
+    std::cerr << "ERROR: " ;
 
     switch (errorNumber) {
         case ERROR_ARGUMENT_NOT_EXIST:
@@ -50,6 +50,11 @@ void Error::errorPrint(int errorNumber, bool ex) {
             break;
         case ERROR_READ_BIO:
             errorMessage = "Failed to read response";
+            break;
+        case ERROR_ARGUMENT_REPEAT:
+            errorMessage = "Using duplicate arguments";
+            break;
+        default:
             break;
     }
 
