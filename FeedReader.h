@@ -14,6 +14,9 @@ public:
 
     void read(int argc, char** argv);
 private:
+    const std::string regexComment = "(^\\s*#.*$)|(^\\s*$)";
+
+
     std::string domainNamePort{0};
     std::string request{0};
     void generateDomainNamePort(const std::string& domainName, const std::string& port);

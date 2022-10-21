@@ -1,7 +1,5 @@
+#include <fstream>
 #include "FeedReader.h"
-
-//#include <libxml2/libxml/parser.h>
-//#include <libxml2/libxml/tree.h>
 
 void FeedReader::read(int argc, char **argv) {
 
@@ -9,6 +7,20 @@ void FeedReader::read(int argc, char **argv) {
     parseArguments.checkArguments(argc,argv);
 
     if(parseArguments.getFeedFilePath()){
+        std::ifstream file (*(parseArguments.getFeedFilePath()));
+        if(!file){
+            std::cout << "ERROR open file " + *(parseArguments.getFeedFilePath()) << std::endl;
+        }
+
+        std::string fileLine{0};
+        while(!file.eof()){
+            getline(file,fileLine);
+            if(!std::regex_match(fileLine, std::regex(regexComment))){
+                urlList.push_back(fileLine);
+            }
+        }
+        file.close();
+
         //todo parse file and add all url to list
 
     }else{
@@ -18,7 +30,9 @@ void FeedReader::read(int argc, char **argv) {
     UrlParser urlParser;
     Connect connect;
     connect.initialization();
+    XMLParser xmlParser;
     for(const std::string& urlString : urlList){
+
         //url string parse -> domain, port...
         urlParser.parse(urlString);
 
@@ -89,10 +103,14 @@ void FeedReader::read(int argc, char **argv) {
         std::string xmlString = response.substr(response.find("\r\n\r\n") + 4);
 //        std::cout << xmlString << std::endl;
     ///////////
-        XMLParser xmlParser(parseArguments.isAssociateUrl(), parseArguments.isAuthor(), parseArguments.isTime());
-        if(xmlParser.parse(xmlString)){
+        xmlParser.setArguments(parseArguments.isAssociateUrl(), parseArguments.isAuthor(), parseArguments.isTime());
+        if(!xmlParser.parse(xmlString)){
             continue;
         }
+
+        connect.closeConnect();
+        xmlParser.reset();
+        urlParser.reset();
     }
 
 }
