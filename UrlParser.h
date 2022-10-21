@@ -34,7 +34,6 @@ private:
 
     void parseScheme(const std::string& scheme);
     void parsePort();
-    bool checkUrl(const std::string& urlString);
 
 public:
     void parse(const std::string& urlArgument);
@@ -46,6 +45,7 @@ public:
     std::string* getPath() const;
     std::string* getParameters() const;
     std::string* getFragment() const;
+    void reset();
 
     ~UrlParser();
 };

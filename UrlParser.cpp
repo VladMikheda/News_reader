@@ -81,6 +81,25 @@ void UrlParser::parsePort() {
 
 }
 
+void UrlParser::reset(){
+    delete stringPort;
+    delete domainName;
+    delete path;
+    delete parameters;
+    delete fragment;
+
+    stringPort = nullptr;
+    domainName = nullptr;
+    path = nullptr;
+    parameters = nullptr;
+    fragment = nullptr;
+
+    httpScheme = false;
+    httpsScheme = false;
+    urlString = '\0';
+    port = 0;
+}
+
 int UrlParser::getPort() const {
     return port;
 }
