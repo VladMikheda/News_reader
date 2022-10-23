@@ -1,11 +1,21 @@
+/**
+ * Project: Čtečka novinek ve formátu Atom a RSS s podporou TLS
+ *
+ * File:     ParseArguments.h
+ * Subject:  ISA 2022
+ *
+ * @author:  Vladislav Mikheda  xmikhe00
+ */
+
 
 #ifndef ISA_PARSEARGUMENTS_H
 #define ISA_PARSEARGUMENTS_H
 #include "Error.h"
 #include "UrlParser.h"
-//using namespace std;
 
-
+/**
+ * The class parses the arguments and checks whether they are valid or not
+ */
 class ParseArguments {
 
 private:
@@ -27,7 +37,8 @@ private:
     bool associateUrl = false;
 
     std::string searchArgument(char* arg);
-    bool checkArgumentValue(int argc, int number);
+    void checkArgumentValue(int argc, int number);
+    void cleanAll();
 
 
 public:
@@ -39,7 +50,7 @@ public:
     std::string* getFeedFilePath() const;
     std::string* getCertificateFilePath() const;
     std::string* getCertificateDirectoryPath() const;
-    bool checkArguments(int argc, char** argv);
+    void checkArguments(int argc, char** argv);
 };
 
 

@@ -1,5 +1,15 @@
+/**
+ * Project: Čtečka novinek ve formátu Atom a RSS s podporou TLS
+ *
+ * File:     ParseArguments.cpp
+ * Subject:  ISA 2022
+ *
+ * @author:  Vladislav Mikheda  xmikhe00
+ */
+
 #include "ParseArguments.h"
 
+// Class destructor
 ParseArguments::~ParseArguments(){
     delete url;
     delete feedFilePath;
@@ -7,43 +17,54 @@ ParseArguments::~ParseArguments(){
     delete certificateDirectoryPath;
 }
 
+//The method of deallocation the memory of variables
+// Called on errors
+void ParseArguments::cleanAll() {
+    delete url;
+    delete feedFilePath;
+    delete certificateFilePath;
+    delete certificateDirectoryPath;
+    url = nullptr;
+    feedFilePath = nullptr;
+    certificateFilePath= nullptr;
+    certificateDirectoryPath= nullptr;
+}
 
-bool ParseArguments::checkArguments(int argc, char** argv){
+
+//The main method in the class runs the argument check
+void ParseArguments::checkArguments(int argc, char** argv){
 
     for (int i = 1; i < argc; i++){
 
         //parse argument to string
         std::string argument = searchArgument(argv[i]);
 
+        //checking parsed arguments for correctness
         if(argument == CERTIFICATE_FILE){
 
             if(certificateFilePath){
-                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
-                return false;
+                cleanAll();
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
             }
 
-            if(checkArgumentValue(argc, i)){
-                return false;
-            }
+            checkArgumentValue(argc, i);
             certificateFilePath = new std::string(argv[++i]); // path entry for the certificate
 
         }else if(argument == CERTIFICATE_DIRECTORY){
 
             if(certificateDirectoryPath){
-                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
-                return false;
+                cleanAll();
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
             }
 
-            if(checkArgumentValue(argc, i)){
-                return false;
-            }
+            checkArgumentValue(argc, i);
             certificateDirectoryPath = new std::string(argv[++i]);
 
         }else if(argument == FEED_FILE){
 
             if(feedFilePath){
-                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
-                return false;
+                cleanAll();
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
             }
 
             checkArgumentValue(argc,i);
@@ -52,61 +73,58 @@ bool ParseArguments::checkArguments(int argc, char** argv){
         }else if(argument == TIME_CHANGE){
 
             if(time) {
-                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
-                return false;
+                cleanAll();
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
             }
-
             time = true;
 
         }else if(argument == NAME_AUTHOR){
 
             if(author) {
-                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
-                return false;
+                cleanAll();
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
             }
-
             author = true;
 
         }else if(argument == ASSOCIATED_URL){
 
             if(associateUrl) {
-                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
-                return false;
-            }
-
+                cleanAll();Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
+                cleanAll();}
             associateUrl = true;
 
         }else{
-
             if(url) {
-                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT, false);
-                return false;
+                cleanAll();
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
             }
-
             url = new std::string(argv[i]);
         }
 
     }
 
     if((!url && !feedFilePath) || (url && feedFilePath)){
-        Error::errorPrint(Error::ERROR_URL_OR_FEED_FILE, false);
-        return false;
+        cleanAll();
+        Error::errorPrint(Error::ERROR_URL_OR_FEED_FILE);
     }
 
-    return true;
 }
 
+//Preparation of arguments for verification
+//Separation of the sign '-'
 std::string ParseArguments::searchArgument(char *arg) {
     return (arg[0] == '-') ? std::string {&arg[1]} : std::string(arg);
 }
 
-bool ParseArguments::checkArgumentValue(int argc, int number) {
+
+//checking if a value follows an argument
+void ParseArguments::checkArgumentValue(int argc, int number) {
     if(number + 1 >=  argc){
-        Error::errorPrint(Error::ERROR_ARGUMENT_NOT_VALUE, false);
-        return false;
+        cleanAll();
+        Error::errorPrint(Error::ERROR_ARGUMENT_NOT_VALUE);
     }
-    return true;
 }
+
 
 bool ParseArguments::isTime() const {
     return time;
@@ -135,3 +153,4 @@ std::string* ParseArguments::getCertificateFilePath() const {
 std::string* ParseArguments::getCertificateDirectoryPath() const {
     return certificateDirectoryPath;
 }
+
