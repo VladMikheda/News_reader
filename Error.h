@@ -24,6 +24,9 @@ public:
         ERROR_CERTIFICATE_INVALID = 120,
         ERROR_SSL_CONNECTION_FAIL = 121,
         ERROR_READ_BIO = 122,
+
+        ERROR_URL_INVALID = 130,
+        ERROR_PORT_INVALID = 131,
     };
 
     static void errorPrint(int errorNumber,  bool ex = true);
