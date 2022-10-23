@@ -1,3 +1,11 @@
+/**
+ * Project: Čtečka novinek ve formátu Atom a RSS s podporou TLS
+ *
+ * File:     UrlParser.h
+ * Subject:  ISA 2022
+ *
+ * @author:  Vladislav Mikheda  xmikhe00
+ */
 
 
 #ifndef ISA_URLPARSER_H
@@ -16,6 +24,8 @@ private:
     const u_int8_t parametersNumber = 5;
     const u_int8_t fragmentNumber = 6;
 
+    const u_int16_t httpPort = 80;
+    const u_int16_t  httpsPort = 443;
     const std::string HTTP = "http";
     const std::string HTTPS = "https";
     const std::string regexUrl =  "^(http|https)://([a-zA-Z\\.0-9-]+)(:[0-9]+)?(/[^:?#]*)?(\\?[^:#]+)?(#.+)?$";
@@ -33,11 +43,10 @@ private:
     std::string urlString{0};
 
     void parseScheme(const std::string& scheme);
-    void parsePort();
+    bool parsePort();
 
 public:
-    void parse(const std::string& urlArgument);
-    int getPort() const;
+    bool parse(const std::string& urlArgument);
     std::string* getStringPort() const;
     bool getHttpScheme() const;
     bool getHttpsScheme() const;
@@ -52,5 +61,3 @@ public:
 
 
 #endif //ISA_URLPARSER_H
-
-//^(http|https)://([a-zA-Z\.0-9-]+)(:[0-9]+)?(/[^:?#]*)?(\?[^:#]+)?(#.+)?$

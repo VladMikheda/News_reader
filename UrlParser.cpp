@@ -1,7 +1,15 @@
+/**
+ * Project: Čtečka novinek ve formátu Atom a RSS s podporou TLS
+ *
+ * File:     UrlParser.cpp
+ * Subject:  ISA 2022
+ *
+ * @author:  Vladislav Mikheda  xmikhe00
+ */
 
 #include "UrlParser.h"
 
-
+// Class destructor
 UrlParser::~UrlParser(){
     delete stringPort;
     delete domainName;
@@ -10,12 +18,12 @@ UrlParser::~UrlParser(){
     delete fragment;
 }
 
-void UrlParser::parse(const std::string& urlArgument) {
-
+bool UrlParser::parse(const std::string& urlArgument) {
 
     std::smatch allParts;
     if(!std::regex_match(urlArgument, allParts, std::regex(regexUrl))){
-        std::cout << "ERROR" << std::endl;
+        Error::errorPrint(Error::ERROR_URL_INVALID, false);
+        return false;
     }
 
     parseScheme(allParts[schemeNumber].str());
@@ -23,6 +31,7 @@ void UrlParser::parse(const std::string& urlArgument) {
     domainName = new std::string(allParts[domainNameNumber].str());
 
     if(!allParts[portNumber].str().empty()){
+        //todo : -> value
         stringPort = new std::string (allParts[portNumber].str().substr(1));
     }
 
@@ -40,6 +49,7 @@ void UrlParser::parse(const std::string& urlArgument) {
         fragment = new std::string (allParts[fragmentNumber].str());
     }
 
+    return true;
 }
 
 void UrlParser::parseScheme(const std::string& scheme) {
@@ -48,23 +58,21 @@ void UrlParser::parseScheme(const std::string& scheme) {
     }else if(scheme == HTTPS){
         httpsScheme = true;
     }
-
-//    std::cout << scheme << std::endl;
 }
 
-void UrlParser::parsePort() {
+bool UrlParser::parsePort() {
 
     if(stringPort){
         try{
             port = stoi(*stringPort, nullptr,10);
         }catch(std::exception const& e){
-            //todo error
-            std::cout << "ERROR port is not correct" << std::endl;
+            Error::errorPrint(Error::ERROR_PORT_INVALID, false);
+            return false;
         }
 
         if(port > 65535 || port < 1){
-            //todo error
-            std::cout << "ERROR port is not correct" << std::endl;
+            Error::errorPrint(Error::ERROR_PORT_INVALID, false);
+            return false;
         }
     }else{
         if(httpScheme){
@@ -73,12 +81,8 @@ void UrlParser::parsePort() {
         }else if(httpsScheme){
             port = 443;
             stringPort = new std::string("443");
-        }else{
-            //todo error
-            std::cout << "ERROR port is not exist";
         }
     }
-
 }
 
 void UrlParser::reset(){
@@ -96,12 +100,8 @@ void UrlParser::reset(){
 
     httpScheme = false;
     httpsScheme = false;
-    urlString = '\0';
+    urlString = {0};
     port = 0;
-}
-
-int UrlParser::getPort() const {
-    return port;
 }
 
 std::string* UrlParser::getStringPort() const {
