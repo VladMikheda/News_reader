@@ -31,7 +31,7 @@ bool Connect::addSslCertificate(const std::string& certificatePath) {
 }
 
 bool Connect::addSslCertificateDir(const std::string& certificateDirPath) {
-    if(!SSL_CTX_load_verify_locations(ctx, certificateDirPath.c_str(), nullptr)){
+    if(!SSL_CTX_load_verify_locations(ctx, nullptr, certificateDirPath.c_str())){
         Error::errorPrint(Error::ERROR_FAIL_CERTIFICATE_DIR, false);
         return false;
     }

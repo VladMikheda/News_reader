@@ -1,13 +1,20 @@
+/**
+ * Project: Čtečka novinek ve formátu Atom a RSS s podporou TLS
+ *
+ * File:     FeedReader.cpp
+ * Subject:  ISA 2022
+ *
+ * @author:  Vladislav Mikheda  xmikhe00
+ */
+
 #include "FeedReader.h"
 
 void FeedReader::read(int argc, char **argv) {
 
     ParseArguments parseArguments;
-    if(parseArguments.checkArguments(argc,argv)){
-        parseArguments.~ParseArguments();
-        exit(Error::ERROR_ARGUMENT);
-    }
+    parseArguments.checkArguments(argc,argv);
 
+    //
     if(parseArguments.getFeedFilePath()){
         std::ifstream file (*(parseArguments.getFeedFilePath()));
         if(!file){
