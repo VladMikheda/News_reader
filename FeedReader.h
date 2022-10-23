@@ -24,7 +24,7 @@ private:
     void generateDomainNamePort(const std::string& domainName, const std::string& port);
     void generateRequest(UrlParser &urlParser);
     bool getCertificate(ParseArguments &parseArguments, Connect &connect);
-
+    void readFile(const std::string *filePath);
 
 
 };

@@ -12,26 +12,13 @@
 void FeedReader::read(int argc, char **argv) {
 
     ParseArguments parseArguments;
+    //call method to parse arguments
     parseArguments.checkArguments(argc,argv);
 
-    //
+    //if the file is set, we read from the file and add all the URLs to the list
+    // if not, add the specified url
     if(parseArguments.getFeedFilePath()){
-        std::ifstream file (*(parseArguments.getFeedFilePath()));
-        if(!file){
-            std::cout << "ERROR open file " + *(parseArguments.getFeedFilePath()) << std::endl;
-        }
-
-        std::string fileLine{0};
-        while(!file.eof()){
-            getline(file,fileLine);
-            if(!std::regex_match(fileLine, std::regex(regexComment))){
-                urlList.push_back(fileLine);
-            }
-        }
-        file.close();
-
-        //todo parse file and add all url to list
-
+        readFile(parseArguments.getFeedFilePath());
     }else{
         urlList.push_back(*parseArguments.getUrl());
     }
@@ -43,7 +30,10 @@ void FeedReader::read(int argc, char **argv) {
     for(const std::string& urlString : urlList){
 
         //url string parse -> domain, port...
-        urlParser.parse(urlString);
+        if(!urlParser.parse(urlString)){
+            //todo out use url
+            continue;
+        }
 
         //concatenate domain name and port to get connection address
         generateDomainNamePort(*urlParser.getDomainName(),*urlParser.getStringPort());
@@ -156,3 +146,21 @@ bool FeedReader::getCertificate(ParseArguments &parseArguments, Connect &connect
         return connect.addDefaultSslCertificate();
     }
 }
+
+void FeedReader::readFile(const std::string *filePath) {
+    std::ifstream file (*filePath);
+    if(!file){
+        std::cout << "ERROR open file " + *filePath << std::endl;
+    }
+
+    std::string fileLine{0};
+    while(!file.eof()){
+        getline(file,fileLine);
+        if(!std::regex_match(fileLine, std::regex(regexComment))){
+            urlList.push_back(fileLine);
+        }
+    }
+    file.close();
+}
+
+
