@@ -1,3 +1,12 @@
+/**
+ * Project: Čtečka novinek ve formátu Atom a RSS s podporou TLS
+ *
+ * File:     XMLParser.h
+ * Subject:  ISA 2022
+ *
+ * @author:  Vladislav Mikheda  xmikhe00
+ */
+
 #ifndef ISA_XMLPARSER_H
 #define ISA_XMLPARSER_H
 
@@ -29,7 +38,7 @@ private:
     xmlNode *rootElement = nullptr;
     xmlDoc *doc = nullptr;
 
-    void checkFormat();
+    bool checkFormat();
     void parseFeedAtom();
     void parseRecordsAtom(xmlNode* entryNode );
     void parseLinkAtom(xmlNode *itemNode, xmlChar **elements);
@@ -41,7 +50,7 @@ private:
     void printRecordInformation(xmlChar **elements);
 
 public:
-    void setArguments(bool url, bool author, bool time);
+    void setArguments(bool urlArg, bool authorArg, bool timeArg);
     void reset();
     bool parse(const std::string& xmlString);
 };

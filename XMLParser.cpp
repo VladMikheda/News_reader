@@ -1,46 +1,75 @@
-
+/**
+ * Project: Čtečka novinek ve formátu Atom a RSS s podporou TLS
+ *
+ * File:     XMLParser.cpp
+ * Subject:  ISA 2022
+ *
+ * @author:  Vladislav Mikheda  xmikhe00
+ */
 #include "XMLParser.h"
 
+
+/**
+ * The main function checks the format of the XML file and sends parsing it
+ * @param xmlString input xml file
+ * @return true on success and false on failure
+ */
 bool XMLParser::parse(const std::string& xmlString) {
 
+    //check and create xml doc
     doc = xmlParseDoc((xmlChar*)xmlString.c_str());
     if(!doc){
-        //todo error
-        std::cout << "Error not open XNL string" << std::endl;
+        Error::errorPrint(Error::ERROR_NOT_OPEN_XML_DOC, false);
+        return false;
     }
 
+    //get the main node of the xml
     rootElement = xmlDocGetRootElement(doc);
     if(!rootElement){
-        std::cout << "Error not exist root element" << std::endl;
+        Error::errorPrint(Error::ERROR_NOT_EXIST_ROOT_ELEMENT, false);
+        return false;
     }
-    checkFormat();
+
+    if(!checkFormat()){
+        return false;
+    }
+
+    //parsing
     if(rss){
         parseInformationRSS();
     }else if(atom){
         parseFeedAtom();
+    }
+
+    return true;
+}
+
+/**
+ * Сhecking if the xml format matches atom or rss
+ * @return true on format is correct and false on format incorrect
+ */
+bool XMLParser::checkFormat() {
+
+    if(!xmlStrcmp(rootElement->name, (const xmlChar*)"rss")){
+        if(!xmlStrcmp(rootElement->properties->children->content, (const xmlChar*)"2.0")){
+            rss = true;
+        }else{
+            Error::errorPrint(Error::ERROR_NOT_SUPPORTED_RSS_VERSION, false);
+            return false;
+        }
+    }else if(!xmlStrcmp(rootElement->name, (const xmlChar*)"feed")){
+        atom = true;
     }else{
+        Error::errorPrint(Error::ERROR_NOT_SUPPORTED_FORMAT, false);
         return false;
     }
 
     return true;
 }
 
-void XMLParser::checkFormat() {
-        if(!xmlStrcmp(rootElement->name, (const xmlChar*)"rss")){
-            if(!xmlStrcmp(rootElement->properties->children->content, (const xmlChar*)"2.0")){
-                rss = true;
-            }else{
-                //todo error
-                std::cout << "1 not rss / atom" << std::endl;
-            }
-        }else if(!xmlStrcmp(rootElement->name, (const xmlChar*)"feed")){
-            atom = true;
-        }else{
-            //todo error
-            std::cout << "not rss / atom" << std::endl;
-        }
-}
-
+/**
+ * Parsing the start node
+ */
 void XMLParser::parseFeedAtom() {
     for( xmlNode *mainNode = rootElement->children; mainNode; mainNode = mainNode->next){
 
@@ -51,11 +80,13 @@ void XMLParser::parseFeedAtom() {
         if(!xmlStrcmp(mainNode->name, (const xmlChar*)"entry")) {
             parseRecordsAtom(mainNode);
         }
-
-
     }
-
 }
+
+/**
+ * Parsing sub-nodes and collecting information about individual articles
+ * @param entryNode pointer to a list with sub-nodes
+ */
 void XMLParser::parseRecordsAtom(xmlNode* entryNode) {
     xmlChar *elements[ALL_ITEM_ELEMENT]{nullptr,nullptr,nullptr,nullptr};
 
@@ -76,7 +107,11 @@ void XMLParser::parseRecordsAtom(xmlNode* entryNode) {
     printRecordInformation(elements);
 }
 
-
+/**
+ * Parsing link information
+ * @param itemNode pointer to node with link information
+ * @param elements array for writing information
+ */
 void XMLParser::parseLinkAtom(xmlNode *itemNode, xmlChar **elements) {
     for(_xmlAttr *linkProperties = itemNode->properties; linkProperties; linkProperties = linkProperties->next) {
         if (!xmlStrcmp(linkProperties->name, (const xmlChar *) "href")){
@@ -85,6 +120,11 @@ void XMLParser::parseLinkAtom(xmlNode *itemNode, xmlChar **elements) {
     }
 }
 
+/**
+ * Parsing author information
+ * @param itemNode pointer to a list of sub-nodes with information about the author
+ * @param elements array for writing information
+ */
 void XMLParser::parseAuthorAtom(xmlNode *itemNode, xmlChar **elements) {
     for(xmlNode *nameNode = itemNode->children; nameNode; nameNode = nameNode->next){
         if (!xmlStrcmp(nameNode->name, (const xmlChar *) "name")){
@@ -97,17 +137,23 @@ void XMLParser::parseAuthorAtom(xmlNode *itemNode, xmlChar **elements) {
 }
 
 
+/**
+ * Parsing the start node
+ */
 void XMLParser::parseInformationRSS() {
 
     for( xmlNode *mainNode = rootElement->children; mainNode; mainNode = mainNode->next){
 
         if(!xmlStrcmp(mainNode->name, (const xmlChar*)"channel")) {
-            parseChannelRSS(mainNode);
+           parseChannelRSS(mainNode);
         }
-
     }
 }
 
+/**
+ * Parsing the node containing the main title and sub-nodes
+ * @param mainNode pointer to a list with sub-nodes
+ */
 void XMLParser::parseChannelRSS(xmlNode* mainNode ) {
     for(xmlNode *channelNode = mainNode->children; channelNode; channelNode = channelNode->next){
 
@@ -120,9 +166,14 @@ void XMLParser::parseChannelRSS(xmlNode* mainNode ) {
         }
 
     }
+
 }
 
 
+/**
+ * Parsing sub-nodes and collecting information about individual articles
+ * @param channelNode pointer to a list with sub-nodes
+ */
 void XMLParser::parseRecordRSS(xmlNode* channelNode) {
     xmlChar *elements[ALL_ITEM_ELEMENT]{nullptr,nullptr,nullptr,nullptr};
 
@@ -139,11 +190,16 @@ void XMLParser::parseRecordRSS(xmlNode* channelNode) {
         else if (time && (!xmlStrcmp(itemNode->name, (const xmlChar *) "pubDate"))) {
             elements[TIME] = xmlNodeGetContent(itemNode);
         }
-
     }
+
     printRecordInformation(elements);
+
 }
 
+/**
+ * Writes information about single elements to std out
+ * @param elements array with information
+ */
 void XMLParser::printRecordInformation(xmlChar **elements) {
 
     if(elements[TITLE]){
@@ -179,6 +235,8 @@ void XMLParser::printRecordInformation(xmlChar **elements) {
             std::cout << elements[AUTHOR_NAME];
             if(elements[AUTHOR]){
                 std::cout << " (" << elements[AUTHOR] << ")" << std::endl;
+            }else{
+                std::cout << "\n";
             }
         }else if(elements[AUTHOR]){
             std::cout << elements[AUTHOR] << std::endl;
@@ -190,24 +248,39 @@ void XMLParser::printRecordInformation(xmlChar **elements) {
 
 }
 
+/**
+ * Writes main title to std out
+ * @param mainTitle pointer to main title
+ */
 void XMLParser::printMainTitle(xmlChar* mainTitle) {
     if(!firstMainTitle){
         std::cout << "\n";
     }
-    std::cout << "*** " << mainTitle << " ***" << std::endl;
+    if(mainTitle){
+        std::cout << "*** " << mainTitle << " ***" << std::endl;
+    }else{
+        std::cout << "*** " << "-----" << " ***" << std::endl;
+    }
     firstItem = true;
     firstMainTitle = false;
+
 }
 
-
-
-
-void XMLParser::setArguments(bool url, bool author, bool time) {
-    this->url = url;
-    this->author = author;
-    this->time = time;
+/**
+ * Set arguments for read xml
+ * @param urlArg will be read and written out URL
+ * @param authorArg will be read and written out author
+ * @param timeArg will be read and written out time update or time publication
+ */
+void XMLParser::setArguments(bool urlArg, bool authorArg, bool timeArg) {
+    this->url = urlArg;
+    this->author = authorArg;
+    this->time = timeArg;
 }
 
+/**
+ * reset method
+ */
 void XMLParser::reset() {
     this->url = false;
     this->author = false;
@@ -217,7 +290,9 @@ void XMLParser::reset() {
     rss  = false;
     firstItem = false;
 
-    xmlFreeDoc(doc);
+    if(doc){
+        xmlFreeDoc(doc);
+    }
     xmlCleanupParser();
     rootElement = nullptr;
     doc = nullptr;
