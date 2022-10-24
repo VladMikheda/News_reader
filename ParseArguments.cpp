@@ -9,7 +9,9 @@
 
 #include "ParseArguments.h"
 
-// Class destructor
+/**
+ * Class destructor
+ */
 ParseArguments::~ParseArguments(){
     delete url;
     delete feedFilePath;
@@ -17,8 +19,10 @@ ParseArguments::~ParseArguments(){
     delete certificateDirectoryPath;
 }
 
-//The method of deallocation the memory of variables
-// Called on errors
+/**
+ * The method of deallocation the memory of variables
+ * Called on errors
+ */
 void ParseArguments::cleanAll() {
     delete url;
     delete feedFilePath;
@@ -30,8 +34,11 @@ void ParseArguments::cleanAll() {
     certificateDirectoryPath= nullptr;
 }
 
-
-//The main method in the class runs the argument check
+/**
+ * The main method in the class runs the argument check
+ * @param argc Number of arguments accepted by the program
+ * @param argv Accepted arguments by the program
+ */
 void ParseArguments::checkArguments(int argc, char** argv){
 
     for (int i = 1; i < argc; i++){
@@ -110,14 +117,21 @@ void ParseArguments::checkArguments(int argc, char** argv){
 
 }
 
-//Preparation of arguments for verification
-//Separation of the sign '-'
+/**
+ * Preparation of arguments for verification
+ * Separation of the sign '-'
+ * @param arg argument
+ * @return processed argument
+ */
 std::string ParseArguments::searchArgument(char *arg) {
     return (arg[0] == '-') ? std::string {&arg[1]} : std::string(arg);
 }
 
-
-//checking if a value follows an argument
+/**
+ * checking if a value follows an argument
+ * @param argc Number of arguments accepted by the program
+ * @param number Argument serial number
+ */
 void ParseArguments::checkArgumentValue(int argc, int number) {
     if(number + 1 >=  argc){
         cleanAll();
