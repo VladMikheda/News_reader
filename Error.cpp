@@ -1,16 +1,22 @@
+/**
+ * Project: Čtečka novinek ve formátu Atom a RSS s podporou TLS
+ *
+ * File:     Error.cpp
+ * Subject:  ISA 2022
+ *
+ * @author:  Vladislav Mikheda  xmikhe00
+ */
+
 #include "Error.h"
 
-//void Error::errorPrint(int errorNumber, const std::string& errorMessage) {
-//
-//    std::cout << "ERROR: " + std::to_string(errorNumber) << std::endl;
-//    std::cout << errorMessage << std::endl;
-//}
-
-
+/**
+ * Print error
+ * @param errorNumber
+ * @param ex whether the program should end after writing out the error
+ */
 void Error::errorPrint(int errorNumber, bool ex) {
     std::string errorMessage{0};
     std::cerr << "ERROR: " ;
-
     switch (errorNumber) {
         case ERROR_ARGUMENT_NOT_EXIST:
             errorMessage = "The given argument does not exist";
@@ -54,6 +60,34 @@ void Error::errorPrint(int errorNumber, bool ex) {
         case ERROR_ARGUMENT_REPEAT:
             errorMessage = "Using duplicate arguments";
             break;
+        case ERROR_URL_INVALID:
+            errorMessage = "The specified url address is incorrect";
+            break;
+        case ERROR_PORT_INVALID:
+            errorMessage = "The specified port is invalid";
+            break;
+        case ERROR_NOT_OPEN_XML_DOC:
+            errorMessage = "Unable to open XML";
+            break;
+        case ERROR_NOT_EXIST_ROOT_ELEMENT:
+            errorMessage = "The main root of the XML document was not put on";
+            break;
+        case ERROR_NOT_SUPPORTED_FORMAT:
+            errorMessage = "The XML file is in a format that is not supported by";
+            break;
+        case ERROR_NOT_SUPPORTED_RSS_VERSION:
+            errorMessage = "This version of RSS is not supported";
+            break;
+        case ERROR_NOT_CORRECT_RESPONSE:
+            errorMessage = "The response code from the server is not successful";
+            break;
+        case ERROR_RESPONSE_HAS_NO_BODY:
+            errorMessage = "The response from the server does not contain a body";
+            break;
+        case ERROR_NOT_OPEN_FILE:
+            errorMessage = "Unable to open feed-file";
+            break;
+
         default:
             break;
     }
@@ -63,4 +97,12 @@ void Error::errorPrint(int errorNumber, bool ex) {
         std::exit(errorNumber);
     }
     //todo help
+}
+
+/**
+ * Print message on std error
+ * @param message text message
+ */
+void Error::printMessage(std::string message) {
+    std::cerr << message << std::endl;
 }

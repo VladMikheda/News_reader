@@ -1,3 +1,11 @@
+/**
+ * Project: Čtečka novinek ve formátu Atom a RSS s podporou TLS
+ *
+ * File:     Error.h
+ * Subject:  ISA 2022
+ *
+ * @author:  Vladislav Mikheda  xmikhe00
+ */
 
 #ifndef ISA_ERROR_H
 #define ISA_ERROR_H
@@ -27,9 +35,22 @@ public:
 
         ERROR_URL_INVALID = 130,
         ERROR_PORT_INVALID = 131,
+
+        ERROR_NOT_OPEN_XML_DOC = 140,
+        ERROR_NOT_EXIST_ROOT_ELEMENT = 141,
+        ERROR_NOT_SUPPORTED_FORMAT = 142,
+        ERROR_NOT_SUPPORTED_RSS_VERSION =143,
+
+        ERROR_NOT_CORRECT_RESPONSE = 150,
+        ERROR_RESPONSE_HAS_NO_BODY = 151,
+
+        ERROR_NOT_OPEN_FILE = 160,
+
+
     };
 
     static void errorPrint(int errorNumber,  bool ex = true);
+    static void printMessage(std::string message);
 
 };
 
