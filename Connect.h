@@ -1,3 +1,11 @@
+/**
+ * Project: Čtečka novinek ve formátu Atom a RSS s podporou TLS
+ *
+ * File:     Connect.h
+ * Subject:  ISA 2022
+ *
+ * @author:  Vladislav Mikheda  xmikhe00
+ */
 #ifndef ISA_CONNECT_H
 #define ISA_CONNECT_H
 
@@ -5,6 +13,8 @@
 # include  "openssl/ssl.h"
 # include  "openssl/err.h"
 #include <string>
+#include <iostream>
+#include <cstring>
 #include "Error.h"
 #define BUFFER_SIZE 1024
 
@@ -20,7 +30,7 @@ public:
     bool addSslCertificateDir(const std::string& certificateDirPath);
 
     bool settingBio();
-    bool unsecureConnect(const std::string& url);
+    bool insecureConnect(const std::string& url);
     void sslConnect(const std::string& url);
     bool isCertificateValid();
     bool sendRequest(const std::string& request);
