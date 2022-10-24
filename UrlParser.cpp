@@ -9,7 +9,9 @@
 
 #include "UrlParser.h"
 
-// Class destructor
+/**
+ * Class destructor
+ */
 UrlParser::~UrlParser(){
     delete stringPort;
     delete domainName;
@@ -18,24 +20,38 @@ UrlParser::~UrlParser(){
     delete fragment;
 }
 
+/**
+ * The main method, parsing and checks the URL address into separate parts
+ *
+ * @param urlArgument URL-address that the user specified or the address read from the file that the user specified
+ * @return true or false depending on whether the URL-address is correct
+ */
 bool UrlParser::parse(const std::string& urlArgument) {
 
+    //validating the URL with a regular expression
+    //if the address is correct, then it is split into parts
     std::smatch allParts;
     if(!std::regex_match(urlArgument, allParts, std::regex(regexUrl))){
         Error::errorPrint(Error::ERROR_URL_INVALID, false);
         return false;
     }
 
+
+    //checking and writing parts of a URL
+
+
     parseScheme(allParts[schemeNumber].str());
 
     domainName = new std::string(allParts[domainNameNumber].str());
 
     if(!allParts[portNumber].str().empty()){
-        //todo : -> value
-        stringPort = new std::string (allParts[portNumber].str().substr(1));
+        const u_int8_t colonPosition = 1;
+        stringPort = new std::string (allParts[portNumber].str().substr(colonPosition));
     }
 
-    parsePort();
+    if(!parsePort()){
+        return false;
+    }
 
     if(!allParts[patchNumber].str().empty()){
         path = new std::string (allParts[patchNumber].str());
@@ -52,6 +68,10 @@ bool UrlParser::parse(const std::string& urlArgument) {
     return true;
 }
 
+/**
+ * Schema definition
+ * @param scheme parsed scheme parameter
+ */
 void UrlParser::parseScheme(const std::string& scheme) {
     if(scheme == HTTP){
         httpScheme = true;
@@ -60,6 +80,10 @@ void UrlParser::parseScheme(const std::string& scheme) {
     }
 }
 
+/**
+ *Verifying that the port is set correctly
+ *If the port is not set, it is assigned depending on the scheme
+ */
 bool UrlParser::parsePort() {
 
     if(stringPort){
@@ -76,15 +100,20 @@ bool UrlParser::parsePort() {
         }
     }else{
         if(httpScheme){
-            port = 80;
-            stringPort = new std::string("80");
+            port = httpPort;
         }else if(httpsScheme){
-            port = 443;
-            stringPort = new std::string("443");
+            port = httpsPort;
         }
+        stringPort = new std::string(std::to_string(port));
     }
+
+    return true;
+
 }
 
+/**
+ * The method resets the values of all parameters
+ */
 void UrlParser::reset(){
     delete stringPort;
     delete domainName;
@@ -100,7 +129,6 @@ void UrlParser::reset(){
 
     httpScheme = false;
     httpsScheme = false;
-    urlString = {0};
     port = 0;
 }
 

@@ -40,8 +40,6 @@ private:
     std::string *parameters = nullptr;
     std::string *fragment = nullptr;
 
-    std::string urlString{0};
-
     void parseScheme(const std::string& scheme);
     bool parsePort();
 
