@@ -9,6 +9,12 @@
 
 #include "FeedReader.h"
 
+/**
+ * The main method of the program,
+ * parses the arguments, enters the loop in which it establishes connections and parses the received answers
+ * @param argc Number of arguments accepted by the program
+ * @param argv Accepted arguments by the program
+ */
 void FeedReader::read(int argc, char **argv) {
 
     ParseArguments parseArguments;
@@ -18,7 +24,9 @@ void FeedReader::read(int argc, char **argv) {
     //if the file is set, we read from the file and add all the URLs to the list
     // if not, add the specified url
     if(parseArguments.getFeedFilePath()){
-        readFile(parseArguments.getFeedFilePath());
+        if(!readFile(parseArguments.getFeedFilePath())){
+            Error::errorPrint(Error::ERROR_NOT_OPEN_FILE);
+        }
     }else{
         urlList.push_back(*parseArguments.getUrl());
     }
@@ -27,11 +35,14 @@ void FeedReader::read(int argc, char **argv) {
     Connect connect;
     connect.initialization();
     XMLParser xmlParser;
+
+    //main program loop
     for(const std::string& urlString : urlList){
 
         //url string parse -> domain, port...
         if(!urlParser.parse(urlString)){
-            //todo out use url
+            Error::printMessage("URL: " + urlString);
+            resetAll(connect,xmlParser,urlParser);
             continue;
         }
 
@@ -39,85 +50,129 @@ void FeedReader::read(int argc, char **argv) {
         generateDomainNamePort(*urlParser.getDomainName(),*urlParser.getStringPort());
         generateRequest(urlParser);
 
-
+        //connection is established depending on the scheme
         if(urlParser.getHttpsScheme()){
             //initialize structure to hold the sll information
             connect.initializationSslConnect();
 
             if(!getCertificate(parseArguments,connect)){
-                connect.closeConnect();
+                Error::printMessage("URL: " + urlString);
+                resetAll(connect,xmlParser,urlParser);
                 continue;
             }
 
             if(!connect.settingBio()){
-                //todo add error
-                connect.closeConnect();
+                Error::printMessage("URL: " + urlString);
+                resetAll(connect,xmlParser,urlParser);
                 continue;
             }
 
             connect.sslConnect(domainNamePort);
             if(!connect.checkConnect()){
-                //todo add error
-                connect.closeConnect();
+                Error::printMessage("URL: " + urlString);
+                resetAll(connect,xmlParser,urlParser);
                 continue;
             }
 
             if(!connect.isCertificateValid()){
-                //todo add error
-                connect.closeConnect();
+                Error::printMessage("URL: " + urlString);
+                resetAll(connect,xmlParser,urlParser);
                 continue;
             }
 
         }else if(urlParser.getHttpScheme()){
-            if(!connect.unsecureConnect(domainNamePort)){
-                //todo add error
-                connect.closeConnect();
+            if(!connect.insecureConnect(domainNamePort)){
+                Error::printMessage("URL: " + urlString);
+                resetAll(connect,xmlParser,urlParser);
                 continue;
             }
             if(!connect.checkConnect()){
-                //todo add error
-                connect.closeConnect();
+                Error::printMessage("URL: " + urlString);
+                resetAll(connect,xmlParser,urlParser);
                 continue;
             }
         }
 
 
         if(!connect.sendRequest(request)){
-            //todo add error
-            connect.closeConnect();
+            Error::printMessage("URL: " + urlString);
+            resetAll(connect,xmlParser,urlParser);
             continue;
         }
 
-        std::string response{0};
+        std::string response = "";
         if(!connect.readResponse(response)){
-            //todo add error
-            connect.closeConnect();
+            Error::printMessage("URL: " + urlString);
+            resetAll(connect,xmlParser,urlParser);
             continue;
         }
 
-//        std::cout << response << std::endl;
+        std::string xmlString{0};
+        if(!findXML(response,xmlString)){
+            Error::printMessage("URL: " + urlString);
+            resetAll(connect,xmlParser,urlParser);
+            continue;
+        }
 
-//        std::cout << request << std::endl;
-
-        std::string xmlString = response.substr(response.find("\r\n\r\n") + 4);
-//        std::cout << xmlString << std::endl;
-    ///////////
         xmlParser.setArguments(parseArguments.isAssociateUrl(), parseArguments.isAuthor(), parseArguments.isTime());
         if(!xmlParser.parse(xmlString)){
+            Error::printMessage("URL: " + urlString);
+            resetAll(connect,xmlParser,urlParser);
+            xmlParser.reset();
             continue;
         }
 
-        connect.closeConnect();
+        resetAll(connect,xmlParser,urlParser);
         xmlParser.reset();
-        urlParser.reset();
+
     }
 
 }
 
+/**
+ * parse the response and separate the headers from the body
+ * @param response response from the server
+ * @param xmlString string with xml response
+ * @return false in case of error or true the truth if successful
+ */
+bool FeedReader::findXML(const std::string response, std::string& xmlString) {
+
+    size_t endFirstLine = response.find("\r\n");
+    if(endFirstLine == std::string::npos){
+        Error::errorPrint(Error::ERROR_NOT_CORRECT_RESPONSE, false);
+        return false;
+    }
+    std::string firstLine = response.substr(0, endFirstLine);
+
+    if(!std::regex_match(firstLine, std::regex(regexHTTPResponse))){
+        Error::errorPrint(Error::ERROR_NOT_CORRECT_RESPONSE, false);
+        return false;
+    }
+
+    size_t endHTTPHeader = response.find(HTTPSeparator);
+    if(endHTTPHeader == std::string::npos){
+        Error::errorPrint(Error::ERROR_RESPONSE_HAS_NO_BODY, false);
+        return false;
+    }
+
+    endHTTPHeader+=HTTPSeparator.length();
+
+    xmlString = response.substr(endHTTPHeader);
+
+    return true;
+}
+
+/**
+ * connects domain name and port
+ */
 void FeedReader::generateDomainNamePort(const std::string& domainName, const std::string& port) {
     domainNamePort = domainName + ":" + port;
 }
 
+/**
+ * Generates a request
+ * @param urlParser reference to class instance urlParser
+ */
 void FeedReader::generateRequest(UrlParser &urlParser) {
     const std::string userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36";
     std::string fullPath = "/";
@@ -137,20 +192,36 @@ void FeedReader::generateRequest(UrlParser &urlParser) {
               + "User-Agent:" + userAgent + "\r\n\r\n";
 }
 
+/**
+ * Selects which certificate to use (standard or user-defined)
+ * @param parseArguments user specified arguments
+ * @param connect reference to class instance Connect
+ * @return
+ */
 bool FeedReader::getCertificate(ParseArguments &parseArguments, Connect &connect) {
     if(parseArguments.getCertificateFilePath()){
-        return connect.addSslCertificate(*parseArguments.getCertificateFilePath());
+
+        std::string certificateFilePath = *parseArguments.getCertificateFilePath();
+        return connect.addSslCertificate(certificateFilePath);
+
     }else if(parseArguments.getCertificateDirectoryPath()){
-        return connect.addSslCertificateDir(*parseArguments.getCertificateDirectoryPath());
+
+        std::string certificateDirPath = *parseArguments.getCertificateDirectoryPath();
+        return connect.addSslCertificateDir(certificateDirPath);
+
     }else{
         return connect.addDefaultSslCertificate();
     }
 }
 
-void FeedReader::readFile(const std::string *filePath) {
+/**
+ *Method for reading URL addresses from a given file
+ * @param filePath path to given file
+ */
+bool FeedReader::readFile(const std::string *filePath) {
     std::ifstream file (*filePath);
     if(!file){
-        std::cout << "ERROR open file " + *filePath << std::endl;
+        return false;
     }
 
     std::string fileLine{0};
@@ -161,6 +232,20 @@ void FeedReader::readFile(const std::string *filePath) {
         }
     }
     file.close();
+    return true;
 }
+/**
+ * Reset all parameters for reuse
+ * @param connect reference to class instance Connect
+ * @param xmlParser reference to class instance XMLParser
+ * @param urlParser reference to class instance URLParser
+ */
+void FeedReader::resetAll(Connect& connect, XMLParser& xmlParser, UrlParser& urlParser) {
+    domainNamePort = "\0";
+    request = "\0";
+    connect.closeConnect();
+    urlParser.reset();
+}
+
 
 
