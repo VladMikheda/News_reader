@@ -11,6 +11,9 @@
 #define ISA_ERROR_H
 #include <iostream>
 
+/**
+ * The class contains methods for displaying errors.
+ */
 class Error {
 
 public:

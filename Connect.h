@@ -19,7 +19,9 @@
 #define BUFFER_SIZE 1024
 
 
-
+/**
+ * The class is used as a wrapper over the library OpenSSL
+ */
 class Connect {
 public:
     void initialization();

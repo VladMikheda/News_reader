@@ -15,7 +15,11 @@
 #include "Connect.h"
 #include <fstream>
 
-
+/**
+ * The main class is used as the main one in the program
+ * and calls the methods of the others of the classes,
+ * starting from parsing the arguments and ending with the output of the result.
+ */
 class FeedReader {
 
 public:

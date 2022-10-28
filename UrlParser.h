@@ -13,6 +13,10 @@
 #include "Error.h"
 #include <regex>
 #include <string>
+/**
+ *The class checks if the URL is correct
+ * and parses the individual parts from it
+ */
 class UrlParser {
 
 private:

@@ -15,6 +15,11 @@
 #include <string>
 
 #define ALL_ITEM_ELEMENT 5
+/**
+ * The class parses the received XML file as a string,
+ * displays the elements requested
+ * by the user: title, date of modification, author, link
+ */
 class XMLParser {
 
 private:
