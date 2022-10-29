@@ -19,13 +19,16 @@ void FeedReader::read(int argc, char **argv) {
 
     ParseArguments parseArguments;
     //call method to parse arguments
-    parseArguments.checkArguments(argc,argv);
+    if(!parseArguments.checkArguments(argc,argv)){
+        Error::exitProgram(Error::EXIT_FAIL);
+    }
 
     //if the file is set, we read from the file and add all the URLs to the list
     // if not, add the specified url
     if(parseArguments.getFeedFilePath()){
         if(!readFile(parseArguments.getFeedFilePath())){
             Error::errorPrint(Error::ERROR_NOT_OPEN_FILE);
+            Error::exitProgram(Error::EXIT_FAIL);
         }
     }else{
         urlList.push_back(*parseArguments.getUrl());
@@ -139,19 +142,19 @@ bool FeedReader::findXML(const std::string response, std::string& xmlString) {
 
     size_t endFirstLine = response.find("\r\n");
     if(endFirstLine == std::string::npos){
-        Error::errorPrint(Error::ERROR_NOT_CORRECT_RESPONSE, false);
+        Error::errorPrint(Error::ERROR_NOT_CORRECT_RESPONSE);
         return false;
     }
     std::string firstLine = response.substr(0, endFirstLine);
 
     if(!std::regex_match(firstLine, std::regex(regexHTTPResponse))){
-        Error::errorPrint(Error::ERROR_NOT_CORRECT_RESPONSE, false);
+        Error::errorPrint(Error::ERROR_NOT_CORRECT_RESPONSE);
         return false;
     }
 
     size_t endHTTPHeader = response.find(HTTPSeparator);
     if(endHTTPHeader == std::string::npos){
-        Error::errorPrint(Error::ERROR_RESPONSE_HAS_NO_BODY, false);
+        Error::errorPrint(Error::ERROR_RESPONSE_HAS_NO_BODY);
         return false;
     }
 

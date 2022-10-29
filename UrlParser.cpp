@@ -32,7 +32,7 @@ bool UrlParser::parse(const std::string& urlArgument) {
     //if the address is correct, then it is split into parts
     std::smatch allParts;
     if(!std::regex_match(urlArgument, allParts, std::regex(regexUrl))){
-        Error::errorPrint(Error::ERROR_URL_INVALID, false);
+        Error::errorPrint(Error::ERROR_URL_INVALID);
         return false;
     }
 
@@ -90,12 +90,12 @@ bool UrlParser::parsePort() {
         try{
             port = stoi(*stringPort, nullptr,10);
         }catch(std::exception const& e){
-            Error::errorPrint(Error::ERROR_PORT_INVALID, false);
+            Error::errorPrint(Error::ERROR_PORT_INVALID);
             return false;
         }
 
         if(port > 65535 || port < 1){
-            Error::errorPrint(Error::ERROR_PORT_INVALID, false);
+            Error::errorPrint(Error::ERROR_PORT_INVALID);
             return false;
         }
     }else{

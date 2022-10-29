@@ -52,8 +52,14 @@ public:
 
     };
 
-    static void errorPrint(int errorNumber,  bool ex = true);
+    enum{
+        SUCCESS = 0,
+        EXIT_FAIL = 1,
+    };
+
+    static void errorPrint(int errorNumber);
     static void printMessage(std::string message);
+    static void exitProgram(int exitNumber);
 
 };
 

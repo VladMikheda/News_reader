@@ -19,14 +19,14 @@ bool XMLParser::parse(const std::string& xmlString) {
     //check and create xml doc
     doc = xmlParseDoc((xmlChar*)xmlString.c_str());
     if(!doc){
-        Error::errorPrint(Error::ERROR_NOT_OPEN_XML_DOC, false);
+        Error::errorPrint(Error::ERROR_NOT_OPEN_XML_DOC);
         return false;
     }
 
     //get the main node of the xml
     rootElement = xmlDocGetRootElement(doc);
     if(!rootElement){
-        Error::errorPrint(Error::ERROR_NOT_EXIST_ROOT_ELEMENT, false);
+        Error::errorPrint(Error::ERROR_NOT_EXIST_ROOT_ELEMENT);
         return false;
     }
 
@@ -54,13 +54,13 @@ bool XMLParser::checkFormat() {
         if(!xmlStrcmp(rootElement->properties->children->content, (const xmlChar*)"2.0")){
             rss = true;
         }else{
-            Error::errorPrint(Error::ERROR_NOT_SUPPORTED_RSS_VERSION, false);
+            Error::errorPrint(Error::ERROR_NOT_SUPPORTED_RSS_VERSION);
             return false;
         }
     }else if(!xmlStrcmp(rootElement->name, (const xmlChar*)"feed")){
         atom = true;
     }else{
-        Error::errorPrint(Error::ERROR_NOT_SUPPORTED_FORMAT, false);
+        Error::errorPrint(Error::ERROR_NOT_SUPPORTED_FORMAT);
         return false;
     }
 

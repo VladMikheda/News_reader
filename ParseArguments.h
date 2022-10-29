@@ -37,8 +37,8 @@ private:
     bool associateUrl = false;
 
     std::string searchArgument(char* arg);
-    void checkArgumentValue(int argc, int number);
-    void cleanAll();
+    bool checkArgumentValue(int argc, int number);
+//    void cleanAll();
 
 
 public:
@@ -50,7 +50,7 @@ public:
     std::string* getFeedFilePath() const;
     std::string* getCertificateFilePath() const;
     std::string* getCertificateDirectoryPath() const;
-    void checkArguments(int argc, char** argv);
+    bool checkArguments(int argc, char** argv);
 };
 
 

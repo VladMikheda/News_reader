@@ -14,7 +14,7 @@
  * @param errorNumber
  * @param ex whether the program should end after writing out the error
  */
-void Error::errorPrint(int errorNumber, bool ex) {
+void Error::errorPrint(int errorNumber) {
     std::string errorMessage{0};
     std::cerr << "ERROR: " ;
     switch (errorNumber) {
@@ -93,9 +93,6 @@ void Error::errorPrint(int errorNumber, bool ex) {
     }
 
     std::cerr << errorMessage << std::endl;
-    if(ex){
-        std::exit(errorNumber);
-    }
     //todo help
 }
 
@@ -105,4 +102,8 @@ void Error::errorPrint(int errorNumber, bool ex) {
  */
 void Error::printMessage(std::string message) {
     std::cerr << message << std::endl;
+}
+
+void Error::exitProgram(int exitNumber) {
+    std::exit(exitNumber);
 }

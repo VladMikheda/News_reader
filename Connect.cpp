@@ -29,7 +29,7 @@ void Connect::initializationSslConnect() {
  */
 bool Connect::addDefaultSslCertificate() {
     if(!SSL_CTX_set_default_verify_paths(ctx)){
-        Error::errorPrint(Error::ERROR_FAIL_DEFAULT_CERTIFICATE, false);
+        Error::errorPrint(Error::ERROR_FAIL_DEFAULT_CERTIFICATE);
         return false;
     }
     return true;
@@ -41,7 +41,7 @@ bool Connect::addDefaultSslCertificate() {
  */
 bool Connect::addSslCertificate(const std::string& certificatePath) {
     if(!SSL_CTX_load_verify_locations(ctx, certificatePath.c_str(), nullptr)){
-        Error::errorPrint(Error::ERROR_FAIL_CERTIFICATE_FILE, false);
+        Error::errorPrint(Error::ERROR_FAIL_CERTIFICATE_FILE);
         return false;
     }
     return true;
@@ -53,7 +53,7 @@ bool Connect::addSslCertificate(const std::string& certificatePath) {
  */
 bool Connect::addSslCertificateDir(const std::string& certificateDirPath) {
     if(!SSL_CTX_load_verify_locations(ctx, nullptr, certificateDirPath.c_str())){
-        Error::errorPrint(Error::ERROR_FAIL_CERTIFICATE_DIR, false);
+        Error::errorPrint(Error::ERROR_FAIL_CERTIFICATE_DIR);
         return false;
     }
     return true;
@@ -65,7 +65,7 @@ bool Connect::addSslCertificateDir(const std::string& certificateDirPath) {
 bool Connect::settingBio() {
     bio = BIO_new_ssl_connect(ctx);
     if(!bio){
-        Error::errorPrint(Error::ERROR_SSL_CONNECTION_FAIL, false);
+        Error::errorPrint(Error::ERROR_SSL_CONNECTION_FAIL);
         return false;
     }
     BIO_get_ssl(bio, &ssl);
@@ -83,7 +83,7 @@ bool Connect::insecureConnect(const std::string& url){
     bio = BIO_new_connect(url.c_str());
     if(bio == nullptr)
     {
-        Error::errorPrint(Error::ERROR_FAIL_CREATE_BIO, false);
+        Error::errorPrint(Error::ERROR_FAIL_CREATE_BIO);
         return false;
     }
     return true;
@@ -96,7 +96,7 @@ bool Connect::insecureConnect(const std::string& url){
 bool Connect::checkConnect(){
     if(BIO_do_connect(bio) <= 0)
     {
-        Error::errorPrint(Error::ERROR_FAIL_OPEN_CONNECT, false);
+        Error::errorPrint(Error::ERROR_FAIL_OPEN_CONNECT);
         return false;
     }
     return true;
@@ -116,7 +116,7 @@ void Connect::sslConnect(const std::string& url) {
 bool Connect::isCertificateValid() {
     if(SSL_get_verify_result(ssl) != X509_V_OK)
     {
-        Error::errorPrint(Error::ERROR_CERTIFICATE_INVALID, false);
+        Error::errorPrint(Error::ERROR_CERTIFICATE_INVALID);
         return false;
     }
 
@@ -138,7 +138,7 @@ bool Connect::sendRequest(const std::string& request) {
     }while(!success && BIO_should_retry(bio));
 
     if(!success){
-        Error::errorPrint(Error::ERROR_SEND_REQUEST, false);
+        Error::errorPrint(Error::ERROR_SEND_REQUEST);
     }
     return success;
 
@@ -175,7 +175,7 @@ bool Connect::readResponse(std::string &response) {
     }while(!success && !error);
 
     if(error){
-        Error::errorPrint(Error::ERROR_READ_BIO, false);
+        Error::errorPrint(Error::ERROR_READ_BIO);
     }
 
     return success;

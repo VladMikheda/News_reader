@@ -23,23 +23,23 @@ ParseArguments::~ParseArguments(){
  * The method of deallocation the memory of variables
  * Called on errors
  */
-void ParseArguments::cleanAll() {
-    delete url;
-    delete feedFilePath;
-    delete certificateFilePath;
-    delete certificateDirectoryPath;
-    url = nullptr;
-    feedFilePath = nullptr;
-    certificateFilePath= nullptr;
-    certificateDirectoryPath= nullptr;
-}
+//void ParseArguments::cleanAll() {
+//    delete url;
+//    delete feedFilePath;
+//    delete certificateFilePath;
+//    delete certificateDirectoryPath;
+//    url = nullptr;
+//    feedFilePath = nullptr;
+//    certificateFilePath= nullptr;
+//    certificateDirectoryPath= nullptr;
+//}
 
 /**
  * The main method in the class runs the argument check
  * @param argc Number of arguments accepted by the program
  * @param argv Accepted arguments by the program
  */
-void ParseArguments::checkArguments(int argc, char** argv){
+bool ParseArguments::checkArguments(int argc, char** argv){
 
     for (int i = 1; i < argc; i++){
 
@@ -50,60 +50,67 @@ void ParseArguments::checkArguments(int argc, char** argv){
         if(argument == CERTIFICATE_FILE){
 
             if(certificateFilePath){
-                cleanAll();
                 Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
+                return false;
             }
 
-            checkArgumentValue(argc, i);
+            if(!checkArgumentValue(argc, i)){
+                return false;
+            }
             certificateFilePath = new std::string(argv[++i]); // path entry for the certificate
 
         }else if(argument == CERTIFICATE_DIRECTORY){
 
             if(certificateDirectoryPath){
-                cleanAll();
                 Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
+                return false;
             }
 
-            checkArgumentValue(argc, i);
+            if(!checkArgumentValue(argc, i)){
+                return false;
+            }
             certificateDirectoryPath = new std::string(argv[++i]);
 
         }else if(argument == FEED_FILE){
 
             if(feedFilePath){
-                cleanAll();
                 Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
+                return false;
             }
 
-            checkArgumentValue(argc,i);
+            if(!checkArgumentValue(argc,i)){
+                return false;
+            }
             feedFilePath = new std::string(argv[++i]);
 
         }else if(argument == TIME_CHANGE){
 
             if(time) {
-                cleanAll();
                 Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
+                return false;
             }
             time = true;
 
         }else if(argument == NAME_AUTHOR){
 
             if(author) {
-                cleanAll();
                 Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
+                return false;
             }
             author = true;
 
         }else if(argument == ASSOCIATED_URL){
 
             if(associateUrl) {
-                cleanAll();Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
-                cleanAll();}
+                Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
+                return false;
+            }
             associateUrl = true;
 
         }else{
             if(url) {
-                cleanAll();
                 Error::errorPrint(Error::ERROR_ARGUMENT_REPEAT);
+                return false;
             }
             url = new std::string(argv[i]);
         }
@@ -111,10 +118,11 @@ void ParseArguments::checkArguments(int argc, char** argv){
     }
 
     if((!url && !feedFilePath) || (url && feedFilePath)){
-        cleanAll();
         Error::errorPrint(Error::ERROR_URL_OR_FEED_FILE);
+        return false;
     }
 
+    return true;
 }
 
 /**
@@ -132,11 +140,12 @@ std::string ParseArguments::searchArgument(char *arg) {
  * @param argc Number of arguments accepted by the program
  * @param number Argument serial number
  */
-void ParseArguments::checkArgumentValue(int argc, int number) {
+bool ParseArguments::checkArgumentValue(int argc, int number) {
     if(number + 1 >=  argc){
-        cleanAll();
         Error::errorPrint(Error::ERROR_ARGUMENT_NOT_VALUE);
+        return false;
     }
+    return true;
 }
 
 
