@@ -11,9 +11,9 @@
 #include "UnitTests.h"
 
 int main(){
-
-//    std::cout << "Hello World!" << std::endl;
     UnitTests unitTests;
-    unitTests.testArgumentParser();
+    unitTests.testAll();
+//    unitTests.testArgumentParser();
+//    unitTests.testURLParser();
     return 0;
 }
