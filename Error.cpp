@@ -87,8 +87,11 @@ void Error::errorPrint(int errorNumber) {
         case ERROR_NOT_OPEN_FILE:
             errorMessage = "Unable to open feed-file";
             break;
+        case ERROR_SSL:
+            errorMessage = "SSL error";
 
         default:
+            errorMessage = "";
             break;
     }
 
