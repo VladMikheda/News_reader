@@ -12,7 +12,7 @@ private:
     std::string programName = "program name";
     std::string urlSting = "https://www.theregister.co.uk/headlines.atom";
     std::string argumentFeedList = "-f";
-    std::string feedFilePath = "/home/goofy/study/ISA/ISA/tests/feedfiletest";
+    std::string feedFilePath = "/feedfiletest";
     std::string argumentCertificateFile = "-c";
     std::string argumentCertificateDir = "-C";
     std::string certificateDirPath = "/etc/ssl/certs";
