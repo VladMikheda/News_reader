@@ -79,6 +79,8 @@ void XMLParser::parseFeedAtom() {
         }
     }
     printMainTitle(mainTitle);
+    mainTitle = nullptr;
+
     for( xmlNode *mainNode = rootElement->children; mainNode; mainNode = mainNode->next){
 
         if(!xmlStrcmp(mainNode->name, (const xmlChar*)"entry")) {
@@ -160,13 +162,22 @@ void XMLParser::parseInformationRSS() {
  * @param mainNode pointer to a list with sub-nodes
  */
 void XMLParser::parseChannelRSS(xmlNode* mainNode ) {
+    xmlChar* mainTitle = nullptr;
+
     for(xmlNode *channelNode = mainNode->children; channelNode; channelNode = channelNode->next){
 
         if(!xmlStrcmp(channelNode->name, (const xmlChar*)"title")){
-            printMainTitle(xmlNodeGetContent(channelNode));
+            mainTitle = xmlNodeGetContent(channelNode);
         }
 
-        else if(!xmlStrcmp(channelNode->name, (const xmlChar*)"item")){
+    }
+
+    printMainTitle(mainTitle);
+    mainTitle = nullptr;
+
+    for(xmlNode *channelNode = mainNode->children; channelNode; channelNode = channelNode->next){
+
+        if(!xmlStrcmp(channelNode->name, (const xmlChar*)"item")){
             parseRecordRSS(channelNode);
         }
 
@@ -229,7 +240,7 @@ void XMLParser::printRecordInformation(xmlChar **elements) {
         if(atom){
             std::cout << "Aktualizace: " << elements[TIME] << std::endl;
         }else{
-            std::cout << "Zveřejněno: " << elements[TIME] << std::endl;
+            std::cout << "Zverejneno: " << elements[TIME] << std::endl;
         }
     }
 

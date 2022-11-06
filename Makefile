@@ -1,21 +1,37 @@
 PROJECT=ISA2022
 
-CC = g++
-#CFLAGS= -Wall -Wextra -pedantic
-FILES=$(wildcard *.cpp)
-FILESTEST=tests/*.cpp
-FILESP= Connect.cpp Error.cpp FeedReader.cpp ParseArguments.cpp UrlParser.cpp XMLParser.cpp
-TESTFILE =
-LIB= -lcrypto -lssl -lxml2 -lz -llzma -licui18n -licuuc -licudata -lm
-#ALL=$(wildcard *.cpp)
+FILENAME = feedreader
+CC=g++
+#CFLAGS = -Wall -Wextra -pedantic
+
+FILESC=$(wildcard *.cpp)
+XMLROOT =$(shell pkg-config --cflags libxml-2.0)
+XMLLIB =$(shell pkg-config --libs libxml-2.0)
+
+FILESC!=ls *.cpp
+FILESH!=ls *.h
+XMLROOT!=pkg-config --cflags libxml-2.0
+XMLLIB!=pkg-config --libs libxml-2.0
+
+
+LIB= -static-libstdc++ -lcrypto -lssl $(XMLLIB)
+
+
+FILESP= Connect.cpp FeedReader.cpp ParseArguments.cpp UrlParser.cpp XMLParser.cpp
+FILESTEST=tests/unit/*.cpp
 
 all: ISA2022 RUN
 
 ISA2022:
-	$(CC) $(CFLAGS) $(FILES) -o feedreader -I/usr/include/libxml2 $(LIB)
+	$(CC) $(CFLAGS) $(FILESC) $(FILESH) -o $(FILENAME) $(XMLROOT) $(LIB)
 RUN:
-	./feedreader 'https://en.wikipedia.org/w/api.php?hidebots=1&days=7&limit=50&hidewikidata=1&action=feedrecentchanges&feedformat=atom' -a -u -T
+	./feedreader -f ./feedfile -a -u -T
 
 TESTS:
-	$(CC)  $(CFLAGS) $(FILESTEST) $(FILESP) -o testfile -I/usr/include/libxml2 $(LIB)
+	$(CC)  $(CFLAGS) $(FILESTEST) $(FILESP) -o testfile  $(XMLROOT) $(LIB)
 	./testfile
+	$(CC) $(CFLAGS) $(FILESC) $(FILESH) -o $(FILENAME) $(XMLROOT) $(LIB)
+	python ./tests/complex/test.py ''
+
+
+
