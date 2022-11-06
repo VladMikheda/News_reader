@@ -71,16 +71,21 @@ bool XMLParser::checkFormat() {
  * Parsing the start node
  */
 void XMLParser::parseFeedAtom() {
+    xmlChar* mainTitle = nullptr;
     for( xmlNode *mainNode = rootElement->children; mainNode; mainNode = mainNode->next){
 
         if(!xmlStrcmp(mainNode->name, (const xmlChar*)"title")) {
-            printMainTitle(xmlNodeGetContent(mainNode));
+            mainTitle = xmlNodeGetContent(mainNode);
         }
+    }
+    printMainTitle(mainTitle);
+    for( xmlNode *mainNode = rootElement->children; mainNode; mainNode = mainNode->next){
 
         if(!xmlStrcmp(mainNode->name, (const xmlChar*)"entry")) {
             parseRecordsAtom(mainNode);
         }
     }
+
 }
 
 /**
