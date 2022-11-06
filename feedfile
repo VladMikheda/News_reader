@@ -1,0 +1,8 @@
+https://www.theregister.com/headlines.atom
+
+#http://www.theregister.com/hardware/headlines.atom
+#https://what-if.xkcd.com/feed.atom
+#
+#-f /home/goofy/study/ISA/ISA/feedfile
+#
+https://en.wikipedia.org/w/api.php?hidebots=1&days=7&limit=50&hidewikidata=1&action=feedrecentchanges&feedformat=atom
