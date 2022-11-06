@@ -30,10 +30,12 @@ public:
     bool addDefaultSslCertificate();
     bool addSslCertificate(const std::string& certificatePath);
     bool addSslCertificateDir(const std::string& certificateDirPath);
+    bool addSslCertificateAndDir(const std::string& certificatePath, const std::string& certificateDirPath);
+
 
     bool settingBio();
     bool insecureConnect(const std::string& url);
-    void sslConnect(const std::string& url);
+    bool sslConnect(const std::string& url, const std::string& host);
     bool isCertificateValid();
     bool sendRequest(const std::string& request);
     bool readResponse(std::string &response);

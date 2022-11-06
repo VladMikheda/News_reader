@@ -58,6 +58,19 @@ bool Connect::addSslCertificateDir(const std::string& certificateDirPath) {
     }
     return true;
 }
+
+/**
+ * Loading the specified user's trust certificate store
+ * @return If the certificate has been loaded it will return true, if not return false
+ */
+bool Connect::addSslCertificateAndDir(const std::string& certificatePath, const std::string& certificateDirPath) {
+    if(!SSL_CTX_load_verify_locations(ctx, certificatePath.c_str(), certificateDirPath.c_str())){
+        Error::errorPrint(Error::ERROR_FAIL_CERTIFICATE_DIR);
+        return false;
+    }
+    return true;
+}
+
 /**
  * Setting up the BIO object
  * @return true on success false on Setting up failure
@@ -96,6 +109,7 @@ bool Connect::insecureConnect(const std::string& url){
 bool Connect::checkConnect(){
     if(BIO_do_connect(bio) <= 0)
     {
+//        printf("%s\n", ERR_error_string(ERR_get_error(), NULL));
         Error::errorPrint(Error::ERROR_FAIL_OPEN_CONNECT);
         return false;
     }
@@ -105,8 +119,14 @@ bool Connect::checkConnect(){
  * Opening a secure connection
  * @param url URL-address:port
  */
-void Connect::sslConnect(const std::string& url) {
+bool Connect::sslConnect(const std::string& url, const std::string& host) {
+    if(!SSL_set_tlsext_host_name(ssl,host.c_str())){
+        Error::errorPrint(Error::ERROR_SSL);
+        return false;
+    }
     BIO_set_conn_hostname(bio, url.c_str());
+
+    return true;
 }
 
 /**
