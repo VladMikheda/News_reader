@@ -70,7 +70,12 @@ void FeedReader::read(int argc, char **argv) {
                 continue;
             }
 
-            connect.sslConnect(domainNamePort);
+            if(!connect.sslConnect(domainNamePort,*urlParser.getDomainName())){
+                Error::printMessage("URL: " + urlString);
+                resetAll(connect,xmlParser,urlParser);
+                continue;
+            }
+
             if(!connect.checkConnect()){
                 Error::printMessage("URL: " + urlString);
                 resetAll(connect,xmlParser,urlParser);
@@ -202,7 +207,13 @@ void FeedReader::generateRequest(UrlParser &urlParser) {
  * @return
  */
 bool FeedReader::getCertificate(ParseArguments &parseArguments, Connect &connect) {
-    if(parseArguments.getCertificateFilePath()){
+    if(parseArguments.getCertificateFilePath() && parseArguments.getCertificateDirectoryPath()){
+
+        std::string certificateFilePath = *parseArguments.getCertificateFilePath();
+        std::string certificateDirPath = *parseArguments.getCertificateDirectoryPath();
+        return connect.addSslCertificateAndDir(certificateFilePath,certificateDirPath);
+
+    }else if(parseArguments.getCertificateFilePath()){
 
         std::string certificateFilePath = *parseArguments.getCertificateFilePath();
         return connect.addSslCertificate(certificateFilePath);
@@ -248,6 +259,7 @@ void FeedReader::resetAll(Connect& connect, XMLParser& xmlParser, UrlParser& url
     request = "\0";
     connect.closeConnect();
     urlParser.reset();
+    xmlParser.reset();
 }
 
 
