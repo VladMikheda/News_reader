@@ -17,7 +17,13 @@
 bool XMLParser::parse(const std::string& xmlString) {
 
     //check and create xml doc
-    doc = xmlParseDoc((xmlChar*)xmlString.c_str());
+    try{
+        xmlSetGenericErrorFunc(nullptr, reinterpret_cast<xmlGenericErrorFunc>(XMLParser::nullXmlGeneralErrorFunction));
+        xmlThrDefSetGenericErrorFunc(nullptr, reinterpret_cast<xmlGenericErrorFunc>(XMLParser::nullXmlGeneralErrorFunction));
+        doc = xmlParseDoc((xmlChar*)xmlString.c_str());
+    }catch(int e){
+        return false;
+    }
     if(!doc){
         Error::errorPrint(Error::ERROR_NOT_OPEN_XML_DOC);
         return false;
@@ -312,6 +318,10 @@ void XMLParser::reset() {
     xmlCleanupParser();
     rootElement = nullptr;
     doc = nullptr;
+}
+
+void XMLParser::nullXmlGeneralErrorFunction(void *ctx, char *msg, ...) {
+
 }
 
 

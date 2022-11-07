@@ -58,6 +58,8 @@ public:
     void setArguments(bool urlArg, bool authorArg, bool timeArg);
     void reset();
     bool parse(const std::string& xmlString);
+
+    static void nullXmlGeneralErrorFunction(void* ctx, char* msg, ...);
 };
 
 
