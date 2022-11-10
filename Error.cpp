@@ -16,7 +16,7 @@
  */
 void Error::errorPrint(int errorNumber) {
     std::string errorMessage{0};
-    std::cerr << "ERROR: " ;
+    std::cerr << "\n" <<"ERROR: " ;
     switch (errorNumber) {
         case ERROR_ARGUMENT_NOT_EXIST:
             errorMessage = "The given argument does not exist";

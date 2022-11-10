@@ -85,6 +85,7 @@ void XMLParser::parseFeedAtom() {
         }
     }
     printMainTitle(mainTitle);
+    xmlFree(mainTitle);
     mainTitle = nullptr;
 
     for( xmlNode *mainNode = rootElement->children; mainNode; mainNode = mainNode->next){
@@ -118,6 +119,12 @@ void XMLParser::parseRecordsAtom(xmlNode* entryNode) {
         }
     }
     printRecordInformation(elements);
+    printRecordInformation(elements);
+    for(int i = 0; i < ALL_ITEM_ELEMENT; i++){
+        if(elements[i]){
+            xmlFree(elements[i]);
+        }
+    }
 }
 
 /**
@@ -158,7 +165,7 @@ void XMLParser::parseInformationRSS() {
     for( xmlNode *mainNode = rootElement->children; mainNode; mainNode = mainNode->next){
 
         if(!xmlStrcmp(mainNode->name, (const xmlChar*)"channel")) {
-           parseChannelRSS(mainNode);
+            parseChannelRSS(mainNode);
         }
     }
 }
@@ -179,6 +186,7 @@ void XMLParser::parseChannelRSS(xmlNode* mainNode ) {
     }
 
     printMainTitle(mainTitle);
+    xmlFree(mainTitle);
     mainTitle = nullptr;
 
     for(xmlNode *channelNode = mainNode->children; channelNode; channelNode = channelNode->next){
@@ -215,6 +223,11 @@ void XMLParser::parseRecordRSS(xmlNode* channelNode) {
     }
 
     printRecordInformation(elements);
+    for(int i = 0; i < ALL_ITEM_ELEMENT; i++){
+        if(elements[i]){
+            xmlFree(elements[i]);
+        }
+    }
 
 }
 
@@ -311,11 +324,12 @@ void XMLParser::reset() {
     atom = false;
     rss  = false;
     firstItem = false;
-
     if(doc){
         xmlFreeDoc(doc);
+        xmlCleanupParser();
     }
-    xmlCleanupParser();
+
+
     rootElement = nullptr;
     doc = nullptr;
 }
@@ -323,8 +337,3 @@ void XMLParser::reset() {
 void XMLParser::nullXmlGeneralErrorFunction(void *ctx, char *msg, ...) {
 
 }
-
-
-
-
-
