@@ -13,8 +13,18 @@
  * Main file for running unit tests
  * @return
  */
-int main(){
+int main(int argc, char** argv ){
     UnitTests unitTests;
-    unitTests.testAll();
+    unitTests.testArgumentParser();
+    unitTests.testURLParser();
+    if(argc > 1){
+        if(strcmp(argv[1],"nocert") == 0)
+            unitTests.testConnect(false);
+        else{
+            unitTests.testConnect(true);
+        }
+    }else{
+        unitTests.testConnect(true);
+    };
     return 0;
 }

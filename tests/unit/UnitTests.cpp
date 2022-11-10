@@ -50,22 +50,18 @@ void UnitTests::testURLParser() {
     std::cout << "TEST:Tests URLParser are SUCCESS" << std::endl;
 }
 
-void UnitTests::testConnect() {
+void UnitTests::testConnect(bool testsCertificate) {
     TestConnect testConnects;
 
     testConnects.connectHTTP();
     testConnects.connectDefaultHTTPS();
-    testConnects.connectCertDirHTTPS();
-    testConnects.connectCertFileHTTPS();
-    testConnects.connectCertFileAndDirHTTPS();
+    if(testsCertificate){
+        testConnects.connectCertDirHTTPS();
+        testConnects.connectCertFileHTTPS();
+        testConnects.connectCertFileAndDirHTTPS();
+    }
     testConnects.twoConnect();
 
     std::cout << "TEST:Tests Connect are SUCCESS" << std::endl;
 }
 
-
-void UnitTests::testAll() {
-    testArgumentParser();
-    testURLParser();
-    testConnect();
-}

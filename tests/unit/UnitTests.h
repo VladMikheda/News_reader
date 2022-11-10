@@ -29,8 +29,7 @@ class UnitTests {
 public:
     void testArgumentParser();
     void testURLParser();
-    void testConnect();
-    void testAll();
+    void testConnect(bool testsCertificate);
 };
 
 
