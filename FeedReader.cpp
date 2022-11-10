@@ -20,6 +20,7 @@ void FeedReader::read(int argc, char **argv) {
     ParseArguments parseArguments;
     //call method to parse arguments
     if(!parseArguments.checkArguments(argc,argv)){
+        parseArguments.~ParseArguments();
         Error::exitProgram(Error::EXIT_FAIL);
     }
 
@@ -134,6 +135,8 @@ void FeedReader::read(int argc, char **argv) {
         xmlParser.reset();
 
     }
+    resetAll(connect,xmlParser,urlParser);
+    xmlParser.reset();
 
 }
 
