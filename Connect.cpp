@@ -214,3 +214,7 @@ void Connect::closeConnect() {
     bio = nullptr;
     ctx = nullptr;
 }
+
+void Connect::fullExit() {
+    CRYPTO_cleanup_all_ex_data();
+}

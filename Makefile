@@ -38,7 +38,7 @@ test:
 	$(CC)  $(CFLAGS) $(FILESTEST) $(FILESP) -o testfile  $(XMLROOT) $(LIB)
 	./testfile nocert
 	$(CC) $(CFLAGS) $(FILESC) $(FILESH) -o $(FILENAME) $(XMLROOT) $(LIB)
-	python ./tests/complex/test.py '' nocert
+	python3 ./tests/complex/test.py '' nocert
 
 
 

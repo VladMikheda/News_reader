@@ -137,6 +137,7 @@ void FeedReader::read(int argc, char **argv) {
     }
     resetAll(connect,xmlParser,urlParser);
     xmlParser.reset();
+    connect.fullExit();
 
 }
 

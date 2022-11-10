@@ -118,7 +118,7 @@ void XMLParser::parseRecordsAtom(xmlNode* entryNode) {
             elements[TIME] = xmlNodeGetContent(itemNode);
         }
     }
-    printRecordInformation(elements);
+
     printRecordInformation(elements);
     for(int i = 0; i < ALL_ITEM_ELEMENT; i++){
         if(elements[i]){

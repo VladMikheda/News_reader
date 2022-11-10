@@ -41,6 +41,7 @@ public:
     bool readResponse(std::string &response);
     bool checkConnect();
     void closeConnect();
+    void fullExit();
 
 
 private:
