@@ -7,20 +7,20 @@ Datum vtvoreni: 5.11.2022
 
 
 ## Popis
-Byla implementována RRS čtečka,která bude vypisovat uživatelů informace uvedené ve stažených zdrojů.\\
+Byla implementována RRS čtečka,která bude vypisovat uživatelům informace uvedené ve stažených zdrojích.\\
 Čtečka podporuje formáty RSS 2.0 a Atom.
 ## Překlad
-Pro překlad je navržen Makefile. A pro překlad je nutné využit příkaz:
+Pro překlad je navržen Makefile. A pro překlad je nutné využít příkaz:
 ```
 make
 ```
-### Testovani
+### Testováni
 ```
 make test
 ```
 
 
-## Spusteni 
+## Spuštění
 ```
 ./feadreader <url addresa | -f <feedfile>> [-c <certfile>] [-C <certaddr>] [-T] [-a] [-u]
 ```
