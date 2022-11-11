@@ -116,6 +116,8 @@ void FeedReader::read(int argc, char **argv) {
             continue;
         }
 
+//        std::cout << response << std::endl;
+
         std::string xmlString{0};
         if(!findXML(response,xmlString)){
             Error::printMessage("URL: " + urlString);
@@ -137,7 +139,7 @@ void FeedReader::read(int argc, char **argv) {
     }
     resetAll(connect,xmlParser,urlParser);
     xmlParser.reset();
-    connect.fullExit();
+//    connect.fullExit();
 
 }
 

@@ -1,8 +1,12 @@
-https://www.theregister.com/headlines.atom
-
-#http://www.theregister.com/hardware/headlines.atom
-#https://what-if.xkcd.com/feed.atom
-#
-#-f /home/goofy/study/ISA/ISA/feedfile
-#
+# FIT
+https://www.fit.vut.cz/fit/news-rss/
+#Wikipedia
 https://en.wikipedia.org/w/api.php?hidebots=1&days=7&limit=50&hidewikidata=1&action=feedrecentchanges&feedformat=atom
+#The register
+https://www.theregister.com/headlines.atom
+https://www.theregister.com/data_centre/headlines.atom
+https://www.theregister.com/software/headlines.atom
+https://www.theregister.co.uk/hardware/headlines.atom
+#xkcd
+https://xkcd.com/atom.xml
+https://what-if.xkcd.com/feed.atom

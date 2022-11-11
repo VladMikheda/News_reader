@@ -15,8 +15,10 @@
 void Connect::initialization() {
     SSL_library_init();
     SSL_load_error_strings();
-    ERR_load_BIO_strings();
+//    ERR_load_BIO_strings();
+
     OpenSSL_add_all_algorithms();
+    ERR_load_crypto_strings();
 }
 
 void Connect::initializationSslConnect() {
@@ -205,6 +207,8 @@ bool Connect::readResponse(std::string &response) {
  * Close connection and reset structure for next connection
  */
 void Connect::closeConnect() {
+
+    CRYPTO_cleanup_all_ex_data();
     if(bio){
         BIO_free_all(bio);
     }
@@ -216,5 +220,27 @@ void Connect::closeConnect() {
 }
 
 void Connect::fullExit() {
-    CRYPTO_cleanup_all_ex_data();
+
+    ERR_free_strings();
+//    CONF_modules_unload(1);
+//    EVP_cleanup();
+//    CRYPTO_cleanup_all_ex_data();
+//    ERR_free_strings();
+//    if(ssl){
+//        SSL_free(ssl);
+//    }
+//    ssl = nullptr;
+
+
+//
+//    sk_SSL_COMP_free(SSL_COMP_get_compression_methods());
+
+
+//    CRYPTO_set_locking_callback(NULL);
+//    CRYPTO_set_id_callback(NULL);
+//    ERR_free_strings();
+//    EVP_cleanup();
+//    CRYPTO_cleanup_all_ex_data();
+//    SSL_COMP_free_compression_methods();
+//    CRYPTO_cleanup_all_ex_data();
 }
