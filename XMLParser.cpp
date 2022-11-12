@@ -335,5 +335,10 @@ void XMLParser::reset() {
 }
 
 void XMLParser::nullXmlGeneralErrorFunction(void *ctx, char *msg, ...) {
-
+    bool log = false;
+    if(log){
+        if(ctx){
+            std::cerr << msg << std::endl;
+        }
+    }
 }
