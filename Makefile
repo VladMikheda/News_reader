@@ -1,8 +1,17 @@
+#
+# Project: Čtečka novinek ve formátu Atom a RSS s podporou TLS
+#
+# File:     Makefile
+# Subject:  ISA 2022
+#
+#@author:  Vladislav Mikheda  xmikhe00
+#
+
 PROJECT=ISA2022
 
 FILENAME = feedreader
 CC=g++
-#CFLAGS = -Wall -Wextra -pedantic
+CFLAGS = -W -Wall -Wextra -Werror -pedantic
 
 FILESC=$(wildcard *.cpp)
 XMLROOT =$(shell pkg-config --cflags libxml-2.0)
