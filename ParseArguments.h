@@ -26,6 +26,8 @@ private:
     const std::string TIME_CHANGE = "T";
     const std::string NAME_AUTHOR = "a";
     const std::string ASSOCIATED_URL = "u";
+    const std::string HELP = "h";
+    bool helpFlag = false;
 
     // main arguments
     std::string* url = nullptr;
@@ -51,6 +53,7 @@ public:
     std::string* getCertificateFilePath() const;
     std::string* getCertificateDirectoryPath() const;
     bool checkArguments(int argc, char** argv);
+    bool isHelp();
 };
 
 

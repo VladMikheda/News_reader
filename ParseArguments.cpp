@@ -42,6 +42,15 @@ ParseArguments::~ParseArguments(){
 bool ParseArguments::checkArguments(int argc, char** argv){
 
     for (int i = 1; i < argc; i++){
+        std::string argument = searchArgument(argv[i]);
+        if(argument == HELP){
+            Error::helpOut();
+            helpFlag = true;
+            return true;
+        }
+    }
+
+    for (int i = 1; i < argc; i++){
 
         //parse argument to string
         std::string argument = searchArgument(argv[i]);
@@ -175,5 +184,9 @@ std::string* ParseArguments::getCertificateFilePath() const {
 
 std::string* ParseArguments::getCertificateDirectoryPath() const {
     return certificateDirectoryPath;
+}
+
+bool ParseArguments::isHelp() {
+    return helpFlag;
 }
 
