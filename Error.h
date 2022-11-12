@@ -62,6 +62,7 @@ public:
     static void errorPrint(int errorNumber);
     static void printMessage(std::string message);
     static void exitProgram(int exitNumber);
+    static void helpOut();
 
 };
 
