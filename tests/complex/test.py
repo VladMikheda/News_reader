@@ -76,7 +76,7 @@ def atom_file():
     if (expect_result_code == result.stdout):
         print("Atom test success")
     else:
-       print("\033[0m", end="")
+        print("\033[0m", end="")
         print("Atom test failed, perhaps the data on the site has been updated")
         print("\033[32m", end="")
 
