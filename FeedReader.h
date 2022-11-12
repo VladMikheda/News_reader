@@ -25,7 +25,7 @@ class FeedReader {
 public:
     std::list<std::string> urlList;
 
-    void read(int argc, char** argv);
+    bool read(int argc, char** argv);
 private:
     const std::string HTTPSeparator = "\r\n\r\n";
     const std::string regexComment = "(^\\s*#.*$)|(^\\s*$)";

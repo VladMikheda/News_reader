@@ -15,13 +15,15 @@
  * @param argc Number of arguments accepted by the program
  * @param argv Accepted arguments by the program
  */
-void FeedReader::read(int argc, char **argv) {
+bool FeedReader::read(int argc, char **argv) {
 
     ParseArguments parseArguments;
     //call method to parse arguments
     if(!parseArguments.checkArguments(argc,argv)){
-        parseArguments.~ParseArguments();
-        Error::exitProgram(Error::EXIT_FAIL);
+        return false;
+    }
+    if(parseArguments.isHelp()){
+        return true;
     }
 
     //if the file is set, we read from the file and add all the URLs to the list
@@ -29,7 +31,7 @@ void FeedReader::read(int argc, char **argv) {
     if(parseArguments.getFeedFilePath()){
         if(!readFile(parseArguments.getFeedFilePath())){
             Error::errorPrint(Error::ERROR_NOT_OPEN_FILE);
-            Error::exitProgram(Error::EXIT_FAIL);
+            return false;
         }
     }else{
         urlList.push_back(*parseArguments.getUrl());
@@ -139,8 +141,9 @@ void FeedReader::read(int argc, char **argv) {
     }
     resetAll(connect,xmlParser,urlParser);
     xmlParser.reset();
-//    connect.fullExit();
+    connect.fullExit();
 
+    return true;
 }
 
 /**
