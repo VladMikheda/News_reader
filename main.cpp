@@ -18,7 +18,9 @@
 int main(int argc, char** argv) {
 
     FeedReader feedReader;
-    feedReader.read(argc,argv);
-
-    return 0;
+    int exit = Error::SUCCESS;
+    if(!feedReader.read(argc,argv)){
+        exit = Error::EXIT_FAIL;
+    }
+    return exit;
 }
