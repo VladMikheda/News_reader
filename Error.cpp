@@ -15,88 +15,95 @@
  * @param ex whether the program should end after writing out the error
  */
 void Error::errorPrint(int errorNumber) {
+    bool help = false;
     std::string errorMessage{0};
-    std::cerr << "\n" <<"ERROR: " ;
+    std::cerr << "\n" <<"Chyba : " ;
     switch (errorNumber) {
         case ERROR_ARGUMENT_NOT_EXIST:
-            errorMessage = "The given argument does not exist";
+            errorMessage = "Zadaný argument neexistuje";
+            help = true;
             break;
         case ERROR_ARGUMENT_NOT_VALUE:
-            errorMessage = "The argument must be followed by the value of the argument";
+            errorMessage = "Za argumentem musí následovat hodnota argumentu";
+            help = true;
             break;
         case ERROR_URL_OR_FEED_FILE:
-            errorMessage = "Either URL or feed file must be specified";
+            errorMessage = "Musí být zadána adresa URL nebo feed file";
+            help = true;
             break;
         case ERROR_FAIL_DEFAULT_CERTIFICATE:
-            errorMessage = "Default certificate issue";
+            errorMessage = "Problém se standardním certifikátem";
             break;
         case ERROR_FAIL_CERTIFICATE_FILE:
-            errorMessage = "Certificate file problem";
+            errorMessage = "Problém se souborem certifikátu";
             break;
         case ERROR_FAIL_CERTIFICATE_DIR:
-            errorMessage = "Problem with certificate directories";
+            errorMessage = "Problém s adresáři certifikátů";
             break;
         case ERROR_FAIL_OPEN_SECURE_CONNECT:
-            errorMessage = "Failed to open ssl connection";
+            errorMessage = "Nepodařilo se otevřít připojení SSL";
             break;
         case ERROR_FAIL_OPEN_CONNECT:
             errorMessage = "Failed to open connection";
             break;
         case ERROR_FAIL_CREATE_BIO:
-            errorMessage = "Problem with creating BIO object";
+            errorMessage = "Připojení se nezdařilo otevřít";
             break;
         case ERROR_CERTIFICATE_INVALID:
-            errorMessage = "The certificate being used is invalid";
+            errorMessage = "Používaný certifikát je neplatný";
             break;
         case ERROR_SSL_CONNECTION_FAIL:
-            errorMessage = "Connection fail";
+            errorMessage = "Připojení se nezdařilo";
             break;
         case ERROR_SEND_REQUEST:
-            errorMessage = "Request sending error";
+            errorMessage = "Chyba odeslání požadavku";
             break;
         case ERROR_READ_BIO:
-            errorMessage = "Failed to read response";
+            errorMessage = "Odpověď serveru nelze přečíst";
             break;
         case ERROR_ARGUMENT_REPEAT:
-            errorMessage = "Using duplicate arguments";
+            errorMessage = "Použití duplicitních argumentů";
+            help = true;
             break;
         case ERROR_URL_INVALID:
-            errorMessage = "The specified url address is incorrect";
+            errorMessage = "Zadaná adresa URL je nesprávná";
             break;
         case ERROR_PORT_INVALID:
-            errorMessage = "The specified port is invalid";
+            errorMessage = "Zadaný port je neplatný";
             break;
         case ERROR_NOT_OPEN_XML_DOC:
-            errorMessage = "Unable to open XML";
+            errorMessage = "Nelze otevřít XML";
             break;
         case ERROR_NOT_EXIST_ROOT_ELEMENT:
-            errorMessage = "The main root of the XML document was not put on";
+            errorMessage = "Hlavní kořen dokumentu XML nebyl vložen";
             break;
         case ERROR_NOT_SUPPORTED_FORMAT:
-            errorMessage = "The XML file is in a format that is not supported by";
+            errorMessage = "Soubor XML je ve formátu, který není podporován";
             break;
         case ERROR_NOT_SUPPORTED_RSS_VERSION:
-            errorMessage = "This version of RSS is not supported";
+            errorMessage = "Verze RSS není podporována";
             break;
         case ERROR_NOT_CORRECT_RESPONSE:
-            errorMessage = "The response code from the server is not successful";
+            errorMessage = "Kód odpovědi ze serveru není úspěšný";
             break;
         case ERROR_RESPONSE_HAS_NO_BODY:
-            errorMessage = "The response from the server does not contain a body";
+            errorMessage = "Odpověď ze serveru neobsahuje tělo";
             break;
         case ERROR_NOT_OPEN_FILE:
-            errorMessage = "Unable to open feed-file";
+            errorMessage = "Nelze otevřít soubor zdroje";
             break;
         case ERROR_SSL:
             errorMessage = "SSL error";
-
+            break;
         default:
             errorMessage = "";
             break;
     }
 
     std::cerr << errorMessage << std::endl;
-    //todo help
+    if(help){
+        helpOut();
+    }
 }
 
 /**
@@ -109,4 +116,19 @@ void Error::printMessage(std::string message) {
 
 void Error::exitProgram(int exitNumber) {
     std::exit(exitNumber);
+}
+
+void Error::helpOut() {
+
+    std::string message = std::string("\n./feadreader <url adresa | -f <feedfile>> [-c <certfile>] [-C <certaddr>] [-T] [-a] [-u]\n")
+           + "url adresa zdroje z kterého bude přijata informace pro výstup programu.\n"
+           + "-f <feedfile> cesta do souboru feedfile. Soubor musí obsahovat v sobě jednotlivé zdroje, každý zdroj na jednom řádku, takže je možnost komentářů, řádek s komentářem musí se začínat #\n"
+           +  "-c <certfile> cesta do certifikátu který bude využít pro ověřování serveru.\n"
+           +  "-C <certaddr> cesta do úložiště certifikátů, které bude možné použit pro ověřování serveru\n"
+           +  "-T pro každý záznam se zobrazí čas publikovaní nebo čas změny\n"
+           +  "-a pro každý záznam se zobrazí autor\n"
+           +  "-u pro každý záznam se zobrazí asociované url"
+           +  "-h vypíše návod na použití programu";
+
+    std::cerr << message << std::endl;
 }
