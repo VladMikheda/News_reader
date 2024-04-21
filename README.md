@@ -1,48 +1,48 @@
-# Čtečka novinek ve formátu Atom a RSS s podporou TLS
+# News Reader with Atom and RSS Format support with TLS
 
-Autor: Vladislav Mikhed
+Author: Vladislav Mikhed
 
-## Popis
-Byla implementována RRS čtečka,která bude vypisovat uživatelům informace uvedené ve stažených zdrojích.
-Čtečka podporuje formáty RSS 2.0 a Atom.
+## Description
+A RSS reader has been implemented, which will output information to users from sources downloaded.
+The reader supports RSS 2.0 and Atom formats.
 ## Poznamky
-Pro překlad a spuštění projektu je nutné využít knihovny openSSL a nástroj pkg-config.  
-## Překlad
-Pro překlad je navržen Makefile. A pro překlad je nutné využít příkaz:
+For compiling and running the project, it is necessary to use the openSSL library and the pkg-config tool. 
+## Compilation
+A Makefile is provided for compilation. To compile, use the command:
 ```
 make
 ```
-### Testováni
+### Testing
 ```
 make test
 ```
 
 
-## Spuštění
+## Execution
 ```
 ./feadreader <url addresa | -f <feedfile>> [-c <certfile>] [-C <certaddr>] [-T] [-a] [-u]
 ```
-| Argumenty | Popis |
+| Arguments | Description |
 |---|---|
-| url | adresa zdroje z kterého bude přijata informace pro výstup programu |
-| -f <feedfile> | cesta do souboru feedfile. Soubor musí obsahovat v sobě jednotlivé zdroje, každý zdroj na jednom řádku, takže je možnost komentářů, řádek s komentářem musí se začínat # |
-| -c <certfile> | cesta do certifikátu který bude využít pro ověřování serveru.
-| -C <certaddr> | cesta do úložiště certifikátů, které bude možné použit pro ověřování serveru
-| -T| pro každý záznam se zobrazí čas publikovaní nebo čas změny
-| -a | pro každý záznam se zobrazí autor
-| -u | pro každý záznam se zobrazí asociované url
-| -h | vypíše návod na použití programu
+| url | the address of the source from which information will be received for the program output |
+| -f <feedfile> | path to the feedfile file. The file must contain individual sources, each source on a separate line, so there is a possibility of comments, a line with a comment must start with #|
+| -c <certfile> | path to the certificate that will be used for server verification
+| -C <certaddr> | path to the certificate store, which can be used for server verification
+| -T| for each record, the publication time or modification time will be displayed
+| -a | for each record, the author will be displayed
+| -u |for each record, the associated url will be displayed
+| -h | prints usage instructions for the program
 
-Je nutné aby byl zadán jeden z parametru url nebo feedfile.
-Parametry musí být odděleny mezerami.
+One of the parameters url or feedfile must be specified.
+Parameters must be separated by spaces.
 
-## Příklad
+## Example
 ```
 ./feedreader 'https://what-if.xkcd.com/feed.atom' -u -T -a
 ```
 
 
-## Seznam souboru
+## File List
 - ./Connect.cpp  
 - ./Connect.h  
 - ./Error.cpp  
